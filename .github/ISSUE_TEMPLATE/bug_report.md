@@ -26,7 +26,6 @@ Describe the actual output value produced by the function.
 If applicable, add screenshots to help illustrate the issue.
 
 **Environment:**
-If applicable, add screenshots to help illustrate the issue.
 - C# library version: '...'
 - .NET version: '...'
 - OS: '...'
