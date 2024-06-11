@@ -69,71 +69,6 @@ public static class MathTrig
 
     #endregion
 
-    #region Hyperbolic Trigonometric Functions
-
-    public static double Sinh(double a)
-    {
-        return Math.Sinh(a);
-    }
-
-    public static double Cosh(double a)
-    {
-        return Math.Cosh(a);
-    }
-
-    public static double Tanh(double a)
-    {
-        var cos = Math.Cosh(a);
-        if (Math.Abs(cos) < double.Epsilon)
-            return double.NaN;
-
-        return Math.Sinh(a) / cos;
-    }
-
-    /// <summary>
-    ///     Cosecant
-    /// </summary>
-    /// <param name="a"></param>
-    /// <returns></returns>
-    public static double Csch(double a)
-    {
-        var sin = Math.Sinh(a);
-        if (Math.Abs(sin) < double.Epsilon)
-            return double.NaN;
-
-        return 1.0 / sin;
-    }
-
-    /// <summary>
-    ///     Secant
-    /// </summary>
-    /// <param name="a"></param>
-    /// <returns></returns>
-    public static double Sech(double a)
-    {
-        var cos = Math.Cosh(a);
-        if (Math.Abs(cos) < double.Epsilon)
-            return double.NaN;
-
-        return 1.0 / cos;
-    }
-
-    /// <summary>
-    ///     Cotangent
-    /// </summary>
-    /// <param name="a"></param>
-    /// <returns></returns>
-    public static double Coth(double a)
-    {
-        var sin = Math.Sinh(a);
-        if (Math.Abs(sin) < double.Epsilon)
-            return double.NaN;
-
-        return Math.Cosh(a) / sin;
-    }
-
-    #endregion
-
     #region Inverse Trigonometric Functions
 
     public static double Arcsin(double d)
@@ -189,7 +124,67 @@ public static class MathTrig
         if (IsNegative(d))
             return Math.PI - Math.Atan(1 / -d);
 
-        return Math.Atan(1 / d);
+        return Math.Atan(1.0 / d);
+    }
+
+    #endregion
+
+    #region Hyperbolic Trigonometric Functions
+
+    public static double Sinh(double value)
+    {
+        return Math.Sinh(value);
+    }
+
+    public static double Cosh(double value)
+    {
+        return Math.Cosh(value);
+    }
+
+    public static double Tanh(double value)
+    {
+        return Math.Tanh(value);
+    }
+
+    /// <summary>
+    ///     Cosecant
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static double Csch(double value)
+    {
+        var sin = Math.Sinh(value);
+        if (Math.Abs(sin) < double.Epsilon)
+            return double.NaN;
+
+        return 1.0 / sin;
+    }
+
+    /// <summary>
+    ///     Secant
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static double Sech(double value)
+    {
+        var cos = Math.Cosh(value);
+        if (Math.Abs(cos) < double.Epsilon)
+            return double.NaN;
+
+        return 1.0 / cos;
+    }
+
+    /// <summary>
+    ///     Cotangent
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static double Coth(double value)
+    {
+        if (Math.Abs(value) < double.Epsilon)
+            return double.NaN;
+
+        return 1 / Math.Tanh(value);
     }
 
     #endregion
