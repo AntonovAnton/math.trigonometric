@@ -2,7 +2,7 @@
 ## Overview
 This C# library provides implementations of all standard trigonometric functions, including basic functions like sine, cosine, and tangent, as well as their hyperbolic counterparts, inverse functions, and more. This library is designed to offer a comprehensive set of tools for mathematical, engineering, and scientific applications requiring trigonometric calculations.
 ## Missing Trigonometric Functions in .NET
-The .NET includes basic trigonometric functions (sin, cos, tan, asin, acos, atan) and their hyperbolic counterparts (sinh, cosh, tanh, asinh, acosh, atanh) in the [Math](https://learn.microsoft.com/en-us/dotnet/api/system.math) class. However, the following trigonometric functions are missed in the .NET and are implemented in this library:
+The .NET includes basic trigonometric functions (sin, cos, tan, asin, acos, atan) and their hyperbolic counterparts (sinh, cosh, tanh, asinh, acosh, atanh) in the [Math](https://learn.microsoft.com/en-us/dotnet/api/system.math) class. However, the following trigonometric functions are missing in .NET and are implemented in this library:
 1. **Cot (Cotangent)**
 2. **Sec (Secant)**
 3. **Csc (Cosecant)**
@@ -339,7 +339,7 @@ Here are some examples of how to use the trigonometric functions in this library
     }
 ## Contributing
 Contributions are welcome! Please fork the repository and submit pull requests for any enhancements or bug fixes.
-If you enjoy my work and find it valuable, please consider becoming my sponsor on GitHub. Your support will enable me to share more open-source code. Together, we can make a positive impact in the developer community!
+If you enjoy my work and find it valuable, please consider becoming my [sponsor on GitHub](https://github.com/sponsors/AntonovAnton). Your support will enable me to share more open-source code. Together, we can make a positive impact in the developer community!
 ## License
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/AntonovAnton/math.trigonometric?tab=MIT-1-ov-file) file for details.
 ## Contact

@@ -2,6 +2,11 @@
 
 namespace MathTrigonometric;
 
+/// <summary>
+///     Class provides implementations of all trigonometric functions, including basic trigonometric functions (sin, cos,
+///     tan, asin, acos, atan), their hyperbolic counterparts (sinh, cosh, tanh, asinh, acosh, atanh), and missed in .NET
+///     but are implemented in this class: cot, sec, csc, acot, asec, acsc, coth, sech, csch, acoth, asech, acsch.
+/// </summary>
 public static class MathTrig
 {
     #region Fundamental Trigonometric Functions
