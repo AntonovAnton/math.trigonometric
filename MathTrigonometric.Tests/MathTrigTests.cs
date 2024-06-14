@@ -85,6 +85,8 @@ public class MathTrigTests
     [InlineData(Math.PI / 2, 1d)]
     [InlineData(-Math.PI, 1 / -1.2246467991473532E-16d)]
     [InlineData(Math.PI, 1 / 1.2246467991473532E-16d)]
+    [InlineData(Math.PI + Math.PI / 2, -1d)]
+    [InlineData(-Math.PI - Math.PI / 2, 1d)]
     [InlineData(double.PositiveInfinity, double.NaN)]
     [InlineData(double.NegativeInfinity, double.NaN)]
     public void MathTrig_Csc_ExpectedValue(double a, double expectedValue)
@@ -108,6 +110,8 @@ public class MathTrigTests
     [InlineData(Math.PI / 2, 1 / 6.123233995736766E-17d)]
     [InlineData(-Math.PI, -1d)]
     [InlineData(Math.PI, -1d)]
+    [InlineData(-2 * Math.PI, 1d)]
+    [InlineData(2 * Math.PI, 1d)]
     [InlineData(double.PositiveInfinity, double.NaN)]
     [InlineData(double.NegativeInfinity, double.NaN)]
     public void MathTrig_Sec_ExpectedValue(double a, double expectedValue)
@@ -152,9 +156,9 @@ public class MathTrigTests
     [InlineData(-1d, -Math.PI / 2)]
     [InlineData(-2d, double.NaN)]
     [InlineData(double.NegativeInfinity, double.NaN)]
-    public void MathTrig_Arcsin_ExpectedValue(double d, double expectedValue)
+    public void MathTrig_Asin_ExpectedValue(double d, double expectedValue)
     {
-        var value = MathTrig.Arcsin(d);
+        var value = MathTrig.Asin(d);
 
         Assert.Equal(expectedValue, value);
     }
@@ -171,9 +175,9 @@ public class MathTrigTests
     [InlineData(-1d, Math.PI)]
     [InlineData(-2d, double.NaN)]
     [InlineData(double.NegativeInfinity, double.NaN)]
-    public void MathTrig_Arccos_ExpectedValue(double d, double expectedValue)
+    public void MathTrig_Acos_ExpectedValue(double d, double expectedValue)
     {
-        var value = MathTrig.Arccos(d);
+        var value = MathTrig.Acos(d);
 
         Assert.Equal(expectedValue, value);
     }
@@ -190,28 +194,9 @@ public class MathTrigTests
     [InlineData(-1d, -Math.PI / 4)]
     [InlineData(-2d, -1.1071487177940904d)]
     [InlineData(double.NegativeInfinity, -Math.PI / 2)]
-    public void MathTrig_Arctan_ExpectedValue(double d, double expectedValue)
+    public void MathTrig_Atan_ExpectedValue(double d, double expectedValue)
     {
-        var value = MathTrig.Arctan(d);
-
-        Assert.Equal(expectedValue, value);
-    }
-
-    [Theory]
-    [InlineData(double.NaN, double.NaN)]
-    [InlineData(0d, double.NaN)]
-    [InlineData(double.Epsilon, double.NaN)]
-    [InlineData(0.5d, double.NaN)]
-    [InlineData(1d, 0d)]
-    [InlineData(2d, 1.0471975511965979d)] //PI / 3
-    [InlineData(double.PositiveInfinity, Math.PI / 2)]
-    [InlineData(-0.5d, double.NaN)]
-    [InlineData(-1d, Math.PI)]
-    [InlineData(-2d, 2 * 1.0471975511965979d)] //2PI / 3
-    [InlineData(double.NegativeInfinity, Math.PI / 2)]
-    public void MathTrig_Arcsec_ExpectedValue(double d, double expectedValue)
-    {
-        var value = MathTrig.Arcsec(d);
+        var value = MathTrig.Atan(d);
 
         Assert.Equal(expectedValue, value);
     }
@@ -228,9 +213,28 @@ public class MathTrigTests
     [InlineData(-1d, -Math.PI / 2)]
     [InlineData(-2d, -0.52359877559829893d)] //PI / 6
     [InlineData(double.NegativeInfinity, 0d)]
-    public void MathTrig_Arccsc_ExpectedValue(double d, double expectedValue)
+    public void MathTrig_Acsc_ExpectedValue(double d, double expectedValue)
     {
-        var value = MathTrig.Arccsc(d);
+        var value = MathTrig.Acsc(d);
+
+        Assert.Equal(expectedValue, value);
+    }
+
+    [Theory]
+    [InlineData(double.NaN, double.NaN)]
+    [InlineData(0d, double.NaN)]
+    [InlineData(double.Epsilon, double.NaN)]
+    [InlineData(0.5d, double.NaN)]
+    [InlineData(1d, 0d)]
+    [InlineData(2d, 1.0471975511965979d)] //PI / 3
+    [InlineData(double.PositiveInfinity, Math.PI / 2)]
+    [InlineData(-0.5d, double.NaN)]
+    [InlineData(-1d, Math.PI)]
+    [InlineData(-2d, 2 * 1.0471975511965979d)] //2PI / 3
+    [InlineData(double.NegativeInfinity, Math.PI / 2)]
+    public void MathTrig_Asec_ExpectedValue(double d, double expectedValue)
+    {
+        var value = MathTrig.Asec(d);
 
         Assert.Equal(expectedValue, value);
     }
@@ -247,9 +251,9 @@ public class MathTrigTests
     [InlineData(-1d, Math.PI - Math.PI / 4)]
     [InlineData(-2d, Math.PI - 0.46364760900080609d)]
     [InlineData(double.NegativeInfinity, Math.PI)]
-    public void MathTrig_Arccot_ExpectedValue(double d, double expectedValue)
+    public void MathTrig_Acot_ExpectedValue(double d, double expectedValue)
     {
-        var value = MathTrig.Arccot(d);
+        var value = MathTrig.Acot(d);
 
         Assert.Equal(expectedValue, value);
     }
@@ -266,9 +270,9 @@ public class MathTrigTests
     [InlineData(-1d, -1.1752011936438014d)]
     [InlineData(-2d, -3.6268604078470186d)]
     [InlineData(double.NegativeInfinity, double.NegativeInfinity)]
-    public void MathTrig_Sinh_ExpectedValue(double e, double expectedValue)
+    public void MathTrig_Sinh_ExpectedValue(double x, double expectedValue)
     {
-        var value = MathTrig.Sinh(e);
+        var value = MathTrig.Sinh(x);
 
         Assert.Equal(expectedValue, value);
     }
@@ -285,9 +289,9 @@ public class MathTrigTests
     [InlineData(-1d, 1.5430806348152437d)]
     [InlineData(-2d, 3.7621956910836314d)]
     [InlineData(double.NegativeInfinity, double.PositiveInfinity)]
-    public void MathTrig_Cosh_ExpectedValue(double e, double expectedValue)
+    public void MathTrig_Cosh_ExpectedValue(double x, double expectedValue)
     {
-        var value = MathTrig.Cosh(e);
+        var value = MathTrig.Cosh(x);
 
         Assert.Equal(expectedValue, value);
     }
@@ -304,9 +308,9 @@ public class MathTrigTests
     [InlineData(-1d, -0.76159415595576485d)]
     [InlineData(-2d, -0.9640275800758169d)]
     [InlineData(double.NegativeInfinity, -1d)]
-    public void MathTrig_Tanh_ExpectedValue(double e, double expectedValue)
+    public void MathTrig_Tanh_ExpectedValue(double x, double expectedValue)
     {
-        var value = MathTrig.Tanh(e);
+        var value = MathTrig.Tanh(x);
 
         Assert.Equal(expectedValue, value);
     }
@@ -323,9 +327,9 @@ public class MathTrigTests
     [InlineData(-1d, 1 / -1.1752011936438014d)]
     [InlineData(-2d, 1 / -3.6268604078470186d)]
     [InlineData(double.NegativeInfinity, 0d)]
-    public void MathTrig_Csch_ExpectedValue(double e, double expectedValue)
+    public void MathTrig_Csch_ExpectedValue(double x, double expectedValue)
     {
-        var value = MathTrig.Csch(e);
+        var value = MathTrig.Csch(x);
 
         Assert.Equal(expectedValue, value);
     }
@@ -342,9 +346,9 @@ public class MathTrigTests
     [InlineData(-1d, 1 / 1.5430806348152437d)]
     [InlineData(-2d, 1 / 3.7621956910836314d)]
     [InlineData(double.NegativeInfinity, 0d)]
-    public void MathTrig_Sech_ExpectedValue(double e, double expectedValue)
+    public void MathTrig_Sech_ExpectedValue(double x, double expectedValue)
     {
-        var value = MathTrig.Sech(e);
+        var value = MathTrig.Sech(x);
 
         Assert.Equal(expectedValue, value);
     }
@@ -361,9 +365,9 @@ public class MathTrigTests
     [InlineData(-1d, 1 / -0.76159415595576485d)]
     [InlineData(-2d, 1 / -0.9640275800758169d)]
     [InlineData(double.NegativeInfinity, -1d)]
-    public void MathTrig_Coth_ExpectedValue(double e, double expectedValue)
+    public void MathTrig_Coth_ExpectedValue(double x, double expectedValue)
     {
-        var value = MathTrig.Coth(e);
+        var value = MathTrig.Coth(x);
 
         Assert.Equal(expectedValue, value);
     }
@@ -380,9 +384,9 @@ public class MathTrigTests
     [InlineData(-1d, -0.88137358701954294d)]
     [InlineData(-2d, -1.4436354751788103d)]
     [InlineData(double.NegativeInfinity, double.NegativeInfinity)]
-    public void MathTrig_Arsinh_ExpectedValue(double d, double expectedValue)
+    public void MathTrig_Asinh_ExpectedValue(double x, double expectedValue)
     {
-        var value = MathTrig.Arsinh(d);
+        var value = MathTrig.Asinh(x);
 
         Assert.Equal(expectedValue, value);
     }
@@ -399,9 +403,9 @@ public class MathTrigTests
     [InlineData(-1d, double.NaN)]
     [InlineData(-2d, double.NaN)]
     [InlineData(double.NegativeInfinity, double.NaN)]
-    public void MathTrig_Arcosh_ExpectedValue(double d, double expectedValue)
+    public void MathTrig_Acosh_ExpectedValue(double x, double expectedValue)
     {
-        var value = MathTrig.Arcosh(d);
+        var value = MathTrig.Acosh(x);
 
         Assert.Equal(expectedValue, value);
     }
@@ -418,28 +422,9 @@ public class MathTrigTests
     [InlineData(-1d, double.NegativeInfinity)]
     [InlineData(-2d, double.NaN)]
     [InlineData(double.NegativeInfinity, double.NaN)]
-    public void MathTrig_Artanh_ExpectedValue(double d, double expectedValue)
+    public void MathTrig_Atanh_ExpectedValue(double x, double expectedValue)
     {
-        var value = MathTrig.Artanh(d);
-
-        Assert.Equal(expectedValue, value);
-    }
-    
-    [Theory]
-    [InlineData(double.NaN, double.NaN)]
-    [InlineData(0d, double.NaN)]
-    [InlineData(double.Epsilon, double.PositiveInfinity)]
-    [InlineData(0.5d, 1.3169578969248166d)]
-    [InlineData(1d, 0d)]
-    [InlineData(2d, double.NaN)]
-    [InlineData(double.PositiveInfinity, double.NaN)]
-    [InlineData(-0.5d, double.NaN)]
-    [InlineData(-1d, double.NaN)]
-    [InlineData(-2d, double.NaN)]
-    [InlineData(double.NegativeInfinity, double.NaN)]
-    public void MathTrig_Arsech_ExpectedValue(double d, double expectedValue)
-    {
-        var value = MathTrig.Arsech(d);
+        var value = MathTrig.Atanh(x);
 
         Assert.Equal(expectedValue, value);
     }
@@ -456,9 +441,28 @@ public class MathTrigTests
     [InlineData(-1d, -0.88137358701954294d)]
     [InlineData(-2d, -0.48121182505960347d)]
     [InlineData(double.NegativeInfinity, 0d)]
-    public void MathTrig_Arcsch_ExpectedValue(double d, double expectedValue)
+    public void MathTrig_Acsch_ExpectedValue(double x, double expectedValue)
     {
-        var value = MathTrig.Arcsch(d);
+        var value = MathTrig.Acsch(x);
+
+        Assert.Equal(expectedValue, value);
+    }
+
+    [Theory]
+    [InlineData(double.NaN, double.NaN)]
+    [InlineData(0d, double.NaN)]
+    [InlineData(double.Epsilon, double.PositiveInfinity)]
+    [InlineData(0.5d, 1.3169578969248166d)]
+    [InlineData(1d, 0d)]
+    [InlineData(2d, double.NaN)]
+    [InlineData(double.PositiveInfinity, double.NaN)]
+    [InlineData(-0.5d, double.NaN)]
+    [InlineData(-1d, double.NaN)]
+    [InlineData(-2d, double.NaN)]
+    [InlineData(double.NegativeInfinity, double.NaN)]
+    public void MathTrig_Asech_ExpectedValue(double x, double expectedValue)
+    {
+        var value = MathTrig.Asech(x);
 
         Assert.Equal(expectedValue, value);
     }
@@ -474,10 +478,55 @@ public class MathTrigTests
     [InlineData(-0.5d, double.NaN)]
     [InlineData(-1d, double.NaN)]
     [InlineData(-2d, -0.54930614433405489d)]
-    [InlineData(double.NegativeInfinity, 0)]
-    public void MathTrig_Arcoth_ExpectedValue(double d, double expectedValue)
+    [InlineData(double.NegativeInfinity, 0d)]
+    public void MathTrig_Acoth_ExpectedValue(double x, double expectedValue)
     {
-        var value = MathTrig.Arcoth(d);
+        var value = MathTrig.Acoth(x);
+
+        Assert.Equal(expectedValue, value);
+    }
+
+    [Theory]
+    [InlineData(double.NaN, double.NaN)]
+    [InlineData(0d, 0d)]
+    [InlineData(double.Epsilon, 0)]
+    [InlineData(2.8161741812951053E-322d, double.Epsilon)]
+    [InlineData(30, Math.PI / 6)]
+    [InlineData(45, Math.PI / 4)]
+    [InlineData(90, Math.PI / 2)]
+    [InlineData(180, Math.PI)]
+    [InlineData(360, 2 * Math.PI)]
+    [InlineData(-30, -Math.PI / 6)]
+    [InlineData(-45, -Math.PI / 4)]
+    [InlineData(-90, -Math.PI / 2)]
+    [InlineData(-180, -Math.PI)]
+    [InlineData(-360, -2 * Math.PI)]
+    [InlineData(double.PositiveInfinity, double.PositiveInfinity)]
+    [InlineData(double.NegativeInfinity, double.NegativeInfinity)]
+    public void MathTrig_DegreesToRadians_ExpectedValue(double a, double expectedValue)
+    {
+        var value = MathTrig.DegreesToRadians(a);
+
+        Assert.Equal(expectedValue, value);
+    }
+
+    [Theory]
+    [InlineData(double.NaN, double.NaN)]
+    [InlineData(0d, 0d)]
+    [InlineData(double.Epsilon, 2.8161741812951053E-322d)]
+    [InlineData(Math.PI / 4, 45)]
+    [InlineData(Math.PI / 2, 90)]
+    [InlineData(Math.PI, 180)]
+    [InlineData(2 * Math.PI, 360)]
+    [InlineData(-Math.PI / 4, -45)]
+    [InlineData(-Math.PI / 2, -90)]
+    [InlineData(-Math.PI, -180)]
+    [InlineData(-2 * Math.PI, -360)]
+    [InlineData(double.PositiveInfinity, double.PositiveInfinity)]
+    [InlineData(double.NegativeInfinity, double.NegativeInfinity)]
+    public void MathTrig_RadiansToDegrees_ExpectedValue(double a, double expectedValue)
+    {
+        var value = MathTrig.RadiansToDegrees(a);
 
         Assert.Equal(expectedValue, value);
     }

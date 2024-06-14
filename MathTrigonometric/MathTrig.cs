@@ -6,16 +6,46 @@ public static class MathTrig
 {
     #region Fundamental Trigonometric Functions
 
+    /// <summary>
+    ///     Sine of the angle is ratio of the opposite leg to hypotenuse.
+    /// </summary>
+    /// <param name="a">Angle in radians (any real number).</param>
+    /// <returns>
+    ///     The sine of the input angle in range: [-1, 1].
+    ///     This method returns <see cref="F:System.Double.NaN" /> if <paramref name="a" /> equals
+    ///     <see cref="F:System.Double.NaN" />, <see cref="F:System.Double.NegativeInfinity" />,
+    ///     or <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
     public static double Sin(double a)
     {
         return Math.Sin(a);
     }
 
+    /// <summary>
+    ///     Cosine of the angle is ratio of the adjacent leg to hypotenuse.
+    /// </summary>
+    /// <param name="a">Angle in radians (any real number).</param>
+    /// <returns>
+    ///     The cosine of the input angle in range: [-1, 1].
+    ///     This method returns <see cref="F:System.Double.NaN" /> if <paramref name="a" /> equals
+    ///     <see cref="F:System.Double.NaN" />, <see cref="F:System.Double.NegativeInfinity" />,
+    ///     or <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
     public static double Cos(double a)
     {
         return Math.Cos(a);
     }
 
+    /// <summary>
+    ///     Tangent of the angle is ratio of the opposite leg to adjacent one.
+    /// </summary>
+    /// <param name="a">Angle in radians (any real number).</param>
+    /// <returns>
+    ///     The tangent of the input angle (any real number).
+    ///     This method returns <see cref="F:System.Double.NaN" /> if <paramref name="a" /> equals
+    ///     <see cref="F:System.Double.NaN" />, <see cref="F:System.Double.NegativeInfinity" />,
+    ///     or <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
     public static double Tan(double a)
     {
         var cos = Math.Cos(a);
@@ -26,10 +56,15 @@ public static class MathTrig
     }
 
     /// <summary>
-    ///     Cosecant
+    ///     Cosecant of the angle is ratio of the hypotenuse to opposite leg.
     /// </summary>
-    /// <param name="a"></param>
-    /// <returns></returns>
+    /// <param name="a">Angle in radians (any real number).</param>
+    /// <returns>
+    ///     The cosecant of the input angle in range: (-∞, -1] ∪ [1, ∞).
+    ///     This method returns <see cref="F:System.Double.NaN" /> if <paramref name="a" /> equals
+    ///     <see cref="F:System.Double.NaN" />, <see cref="F:System.Double.NegativeInfinity" />,
+    ///     or <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
     public static double Csc(double a)
     {
         var sin = Math.Sin(a);
@@ -40,10 +75,15 @@ public static class MathTrig
     }
 
     /// <summary>
-    ///     Secant
+    ///     Secant of the angle is ratio of the hypotenuse to adjacent leg.
     /// </summary>
-    /// <param name="a"></param>
-    /// <returns></returns>
+    /// <param name="a">Angle in radians (any real number).</param>
+    /// <returns>
+    ///     The secant of the input angle in range: (-∞, -1] ∪ [1, ∞).
+    ///     This method returns <see cref="F:System.Double.NaN" /> if <paramref name="a" /> equals
+    ///     <see cref="F:System.Double.NaN" />, <see cref="F:System.Double.NegativeInfinity" />,
+    ///     or <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
     public static double Sec(double a)
     {
         var cos = Math.Cos(a);
@@ -54,10 +94,15 @@ public static class MathTrig
     }
 
     /// <summary>
-    ///     Cotangent
+    ///     Cotangent of the angle is ratio of the adjacent leg to opposite one.
     /// </summary>
-    /// <param name="a"></param>
-    /// <returns></returns>
+    /// <param name="a">Angle in radians (any real number).</param>
+    /// <returns>
+    ///     The cotangent of the input angle (any real number).
+    ///     This method returns <see cref="F:System.Double.NaN" /> if <paramref name="a" /> equals
+    ///     <see cref="F:System.Double.NaN" />, <see cref="F:System.Double.NegativeInfinity" />,
+    ///     or <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
     public static double Cot(double a)
     {
         var sin = Math.Sin(a);
@@ -71,51 +116,96 @@ public static class MathTrig
 
     #region Inverse Trigonometric Functions
 
-    public static double Arcsin(double d)
+    /// <summary>
+    ///     Arc sine is inverse of the <see cref="Sin" /> function.
+    /// </summary>
+    /// <param name="d">Value in range: [-1, 1].</param>
+    /// <returns>
+    ///     Angle in radians is limited to the range [−π/2, π/2].
+    ///     This method returns <see cref="F:System.Double.NaN" /> if <paramref name="d" /> equals
+    ///     <see cref="F:System.Double.NaN" />, <see cref="F:System.Double.NegativeInfinity" />,
+    ///     or <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
+    public static double Asin(double d)
     {
         return Math.Asin(d);
     }
 
-    public static double Arccos(double d)
+    /// <summary>
+    ///     Arc cosine is inverse of the <see cref="Cos" /> function.
+    /// </summary>
+    /// <param name="d">Value in range: [-1, 1].</param>
+    /// <returns>
+    ///     Angle in radians is limited to the range [0, π].
+    ///     This method returns <see cref="F:System.Double.NaN" /> if <paramref name="d" /> equals
+    ///     <see cref="F:System.Double.NaN" />, <see cref="F:System.Double.NegativeInfinity" />,
+    ///     or <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
+    public static double Acos(double d)
     {
         return Math.Acos(d);
     }
 
-    public static double Arctan(double d)
+    /// <summary>
+    ///     Arc tangent is inverse of the <see cref="Tan" /> function.
+    /// </summary>
+    /// <param name="d">Any real number.</param>
+    /// <returns>
+    ///     Angle in radians is limited to the range (−π/2, π/2).
+    ///     This method returns <see cref="F:System.Double.NaN" />
+    ///     if <paramref name="d" /> equals <see cref="F:System.Double.NaN" />,
+    ///     −π/2 if <paramref name="d" /> equals <see cref="F:System.Double.NegativeInfinity" />,
+    ///     π/2 if <paramref name="d" /> equals <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
+    public static double Atan(double d)
     {
         return Math.Atan(d);
     }
 
     /// <summary>
-    ///     Inverse Cosecant
+    ///     Arc cosecant is inverse of the <see cref="Csc" /> function.
     /// </summary>
-    /// <param name="d"></param>
-    /// <returns></returns>
-    public static double Arccsc(double d)
+    /// <param name="d">Value in range: (-∞, -1] ∪ [1, ∞).</param>
+    /// <returns>
+    ///     Angle in radians is limited to the range [−π/2, 0)∪(0, π/2].
+    ///     This method returns <see cref="F:System.Double.NaN" /> if <paramref name="d" /> equals
+    ///     <see cref="F:System.Double.NaN" />, or <paramref name="d" /> in range: (-1, 1).
+    ///     This method returns 0 if <paramref name="d" /> equals <see cref="F:System.Double.NegativeInfinity" />
+    ///     or <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
+    public static double Acsc(double d)
     {
         return Math.Abs(d) < double.Epsilon ? double.NaN : Math.Asin(1.0 / d);
     }
 
     /// <summary>
-    ///     Inverse Secant
+    ///     Arc secant is inverse of the <see cref="Sec" /> function.
     /// </summary>
-    /// <param name="d"></param>
-    /// <returns></returns>
-    public static double Arcsec(double d)
+    /// <param name="d">Value in range: (-∞, -1] ∪ [1, ∞).</param>
+    /// <returns>
+    ///     Angle in radians is limited to the range [0, π/2)∪(π/2, π].
+    ///     This method returns <see cref="F:System.Double.NaN" /> if <paramref name="d" /> equals
+    ///     <see cref="F:System.Double.NaN" />, or <paramref name="d" /> in range: (-1, 1).
+    ///     This method returns π/2 if <paramref name="d" /> equals <see cref="F:System.Double.NegativeInfinity" />
+    ///     or <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
+    public static double Asec(double d)
     {
         return Math.Abs(d) < double.Epsilon ? double.NaN : Math.Acos(1.0 / d);
     }
 
-    /// <summary>Returns the angle whose cotangent is the specified number.</summary>
-    /// <param name="d">A number representing a cotangent.</param>
+    /// <summary>
+    ///     Arc cotangent is inverse of the <see cref="Cot" />> function.
+    /// </summary>
+    /// <param name="d">Any real number.</param>
     /// <returns>
-    ///     An angle, θ, measured in radians, such that 0 ≤ θ ≤ π.
-    ///     -or-
-    ///     <see cref="F:System.Double.NaN" /> if <paramref name="d" /> equals <see cref="F:System.Double.NaN" />, 0 if
-    ///     <paramref name="d" /> equals <see cref="F:System.Double.NegativeInfinity" />, or π if <paramref name="d" /> equals
-    ///     <see cref="F:System.Double.PositiveInfinity" />.
+    ///     Angle in radians is limited to the range (0, π).
+    ///     This method returns <see cref="F:System.Double.NaN" />
+    ///     if <paramref name="d" /> equals <see cref="F:System.Double.NaN" />,
+    ///     π if <paramref name="d" /> equals <see cref="F:System.Double.NegativeInfinity" />,
+    ///     0 if <paramref name="d" /> equals <see cref="F:System.Double.PositiveInfinity" />.
     /// </returns>
-    public static double Arccot(double d)
+    public static double Acot(double d)
     {
         if (Math.Abs(d) < double.Epsilon)
             return Math.PI / 2;
@@ -131,29 +221,72 @@ public static class MathTrig
 
     #region Hyperbolic Trigonometric Functions
 
-    public static double Sinh(double value)
+    /// <summary>
+    ///     Hyperbolic sine is defined as Sinh(x) = (e^x − e^−x)/2.
+    /// </summary>
+    /// <param name="x">Any real number.</param>
+    /// <returns>
+    ///     Value (any real number).
+    ///     This method returns <see cref="F:System.Double.NaN" />
+    ///     if <paramref name="x" /> equals <see cref="F:System.Double.NaN" />,
+    ///     <see cref="F:System.Double.NegativeInfinity" /> if <paramref name="x" /> equals
+    ///     <see cref="F:System.Double.NegativeInfinity" />,
+    ///     <see cref="F:System.Double.PositiveInfinity" /> if <paramref name="x" /> equals
+    ///     <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
+    public static double Sinh(double x)
     {
-        return Math.Sinh(value);
-    }
-
-    public static double Cosh(double value)
-    {
-        return Math.Cosh(value);
-    }
-
-    public static double Tanh(double value)
-    {
-        return Math.Tanh(value);
+        return Math.Sinh(x);
     }
 
     /// <summary>
-    ///     Cosecant
+    ///     Hyperbolic cosine is defined as Cosh(x) = (e^x + e^−x)/2.
     /// </summary>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    public static double Csch(double value)
+    /// <param name="x">Any real number.</param>
+    /// <returns>
+    ///     Value in range: [1, +∞).
+    ///     This method returns <see cref="F:System.Double.NaN" />
+    ///     if <paramref name="x" /> equals <see cref="F:System.Double.NaN" />,
+    ///     <see cref="F:System.Double.PositiveInfinity" /> if <paramref name="x" /> equals
+    ///     <see cref="F:System.Double.NegativeInfinity" />,
+    ///     <see cref="F:System.Double.PositiveInfinity" /> if <paramref name="x" /> equals
+    ///     <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
+    public static double Cosh(double x)
     {
-        var sin = Math.Sinh(value);
+        return Math.Cosh(x);
+    }
+
+    /// <summary>
+    ///     Hyperbolic tangent is defined as Tanh(x) = (e^x − e^−x)/(e^x + e^−x).
+    /// </summary>
+    /// <param name="x">Any real number.</param>
+    /// <returns>
+    ///     Value in range: (-1, 1).
+    ///     This method returns <see cref="F:System.Double.NaN" />
+    ///     if <paramref name="x" /> equals <see cref="F:System.Double.NaN" />,
+    ///     -1 if <paramref name="x" /> equals <see cref="F:System.Double.NegativeInfinity" />,
+    ///     1 if <paramref name="x" /> equals <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
+    public static double Tanh(double x)
+    {
+        return Math.Tanh(x);
+    }
+
+    /// <summary>
+    ///     Hyperbolic cosecant is defined as Csch(x) = 2/(e^x − e^−x).
+    /// </summary>
+    /// <param name="x">Value in range: (−∞, 0)∪(0, +∞).</param>
+    /// <returns>
+    ///     Value in range: (−∞, 0)∪(0, +∞).
+    ///     This method returns <see cref="F:System.Double.NaN" />
+    ///     if <paramref name="x" /> equals <see cref="F:System.Double.NaN" /> or 0.
+    ///     This method returns 0 if <paramref name="x" /> equals <see cref="F:System.Double.NegativeInfinity" />
+    ///     or <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
+    public static double Csch(double x)
+    {
+        var sin = Math.Sinh(x);
         if (Math.Abs(sin) < double.Epsilon)
             return double.NaN;
 
@@ -161,13 +294,19 @@ public static class MathTrig
     }
 
     /// <summary>
-    ///     Secant
+    ///     Hyperbolic secant is defined as Sech(x) = 2/(e^x + e^−x).
     /// </summary>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    public static double Sech(double value)
+    /// <param name="x">Any real number.</param>
+    /// <returns>
+    ///     Value in range: (0, 1].
+    ///     This method returns <see cref="F:System.Double.NaN" />
+    ///     if <paramref name="x" /> equals <see cref="F:System.Double.NaN" />.
+    ///     This method returns 0 if <paramref name="x" /> equals <see cref="F:System.Double.NegativeInfinity" />
+    ///     or <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
+    public static double Sech(double x)
     {
-        var cos = Math.Cosh(value);
+        var cos = Math.Cosh(x);
         if (Math.Abs(cos) < double.Epsilon)
             return double.NaN;
 
@@ -175,107 +314,187 @@ public static class MathTrig
     }
 
     /// <summary>
-    ///     Cotangent
+    ///     Hyperbolic cotangent is defined as Coth(x) = (e^x + e^−x)/(e^x − e^−x).
     /// </summary>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    public static double Coth(double value)
+    /// <param name="x">Value in range: (−∞, 0)∪(0, +∞).</param>
+    /// <returns>
+    ///     Value in range: (−∞, -1)∪(1, +∞).
+    ///     This method returns <see cref="F:System.Double.NaN" />
+    ///     if <paramref name="x" /> equals <see cref="F:System.Double.NaN" /> or 0.
+    ///     This method returns -1 if <paramref name="x" /> equals <see cref="F:System.Double.NegativeInfinity" />,
+    ///     1 if <paramref name="x" /> equals <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
+    public static double Coth(double x)
     {
-        if (Math.Abs(value) < double.Epsilon)
+        if (Math.Abs(x) < double.Epsilon)
             return double.NaN;
 
-        return 1 / Math.Tanh(value);
+        return 1 / Math.Tanh(x);
     }
 
     #endregion
 
     #region Inverse Hyperbolic Trigonometric Functions
 
-    public static double Arsinh(double d)
+    /// <summary>
+    ///     Arc-hyperbolic sine is inverse of the <see cref="Sinh" /> function is defined as Arsinh(x) = ln[x + √(x^2 + 1)].
+    /// </summary>
+    /// <param name="x">Any real number.</param>
+    /// <returns>
+    ///     Value (any real number).
+    ///     This method returns <see cref="F:System.Double.NaN" />
+    ///     if <paramref name="x" /> equals <see cref="F:System.Double.NaN" />,
+    ///     <see cref="F:System.Double.NegativeInfinity" /> if <paramref name="x" /> equals
+    ///     <see cref="F:System.Double.NegativeInfinity" />,
+    ///     <see cref="F:System.Double.PositiveInfinity" /> if <paramref name="x" /> equals
+    ///     <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
+    public static double Asinh(double x)
     {
-        if (double.IsNegativeInfinity(d))
+        if (double.IsNegativeInfinity(x))
             return double.NegativeInfinity;
 
         //the Trigonometric Symmetry is applied: arsinh(−x)=−arsinh(x)
-        if (IsNegative(d))
-            return -Math.Log(-d + Math.Sqrt(Math.Pow(d, 2) + 1.0));
+        if (IsNegative(x))
+            return -Math.Log(-x + Math.Sqrt(Math.Pow(x, 2) + 1.0));
 
-        return Math.Log(d + Math.Sqrt(Math.Pow(d, 2) + 1.0));
-    }
-
-    public static double Arcosh(double d)
-    {
-        if (d < 1.0)
-            return double.NaN;
-
-        return Math.Log(d + Math.Sqrt(Math.Pow(d, 2) - 1.0));
-    }
-
-    public static double Artanh(double d)
-    {
-        if (Math.Abs(d + 1.0) < double.Epsilon)
-            return double.NegativeInfinity;
-
-        if (Math.Abs(d - 1.0) < double.Epsilon)
-            return double.PositiveInfinity;
-
-        if (Math.Abs(d) > 1.0)
-            return double.NaN;
-
-        return Math.Log((1.0 + d) / (1.0 - d)) / 2;
+        return Math.Log(x + Math.Sqrt(Math.Pow(x, 2) + 1.0));
     }
 
     /// <summary>
-    ///     Inverse Hyperbolic Cosecant
+    ///     Arc-hyperbolic cosine is inverse of the <see cref="Cosh" /> function is defined as Arcosh(x) = ln[x + √(x^2 - 1)].
     /// </summary>
-    /// <param name="d"></param>
-    /// <returns></returns>
-    public static double Arcsch(double d)
+    /// <param name="x">Value in range: [1, +∞).</param>
+    /// <returns>
+    ///     Value in range: [0, +∞).
+    ///     This method returns <see cref="F:System.Double.NaN" />
+    ///     if <paramref name="x" /> equals <see cref="F:System.Double.NaN" />,
+    ///     <see cref="F:System.Double.NaN" /> if <paramref name="x" /> equals
+    ///     <see cref="F:System.Double.NegativeInfinity" />,
+    ///     <see cref="F:System.Double.PositiveInfinity" /> if <paramref name="x" /> equals
+    ///     <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
+    public static double Acosh(double x)
     {
-        if (Math.Abs(d) < double.Epsilon)
+        if (x < 1.0)
+            return double.NaN;
+
+        return Math.Log(x + Math.Sqrt(Math.Pow(x, 2) - 1.0));
+    }
+
+    /// <summary>
+    ///     Arc-hyperbolic tangent is inverse of the <see cref="Tanh" /> function
+    ///     is defined as Artanh(x) = ln[(1 + x)/(1 − x)]/2.
+    /// </summary>
+    /// <param name="x">Value in range: (-1, 1).</param>
+    /// <returns>
+    ///     Value (any real number).
+    ///     This method returns <see cref="F:System.Double.NaN" /> if <paramref name="x" /> equals
+    ///     <see cref="F:System.Double.NaN" />, <see cref="F:System.Double.NegativeInfinity" />,
+    ///     or <see cref="F:System.Double.PositiveInfinity" />.
+    ///     This method returns <see cref="F:System.Double.NegativeInfinity" /> if <paramref name="x" /> equals -1,
+    ///     <see cref="F:System.Double.PositiveInfinity" /> if <paramref name="x" /> equals 1.
+    /// </returns>
+    public static double Atanh(double x)
+    {
+        if (Math.Abs(x + 1.0) < double.Epsilon)
+            return double.NegativeInfinity;
+
+        if (Math.Abs(x - 1.0) < double.Epsilon)
+            return double.PositiveInfinity;
+
+        if (Math.Abs(x) > 1.0)
+            return double.NaN;
+
+        return Math.Log((1.0 + x) / (1.0 - x)) / 2;
+    }
+
+    /// <summary>
+    ///     Arc-hyperbolic cosecant is inverse of the <see cref="Cosh" /> function
+    ///     is defined as Arcsch(x) = ln[1/x + √(1/(x^2) + 1)].
+    /// </summary>
+    /// <param name="x">Value in range: (−∞, 0)∪(0, +∞).</param>
+    /// <returns>
+    ///     Value in range: (−∞, -0)∪(0, +∞).
+    ///     This method returns <see cref="F:System.Double.NaN" />
+    ///     if <paramref name="x" /> equals <see cref="F:System.Double.NaN" /> or 0.
+    ///     This method returns 0 if <paramref name="x" /> equals <see cref="F:System.Double.NegativeInfinity" />
+    ///     or <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
+    public static double Acsch(double x)
+    {
+        if (Math.Abs(x) < double.Epsilon)
             return double.NaN;
 
         //the Trigonometric Symmetry is applied: arcsch(−x)=−arcsch(x)
-        if (IsNegative(d))
-            return -Math.Log(1.0 / -d + Math.Sqrt(1.0 / Math.Pow(d, 2.0) + 1.0));
+        if (IsNegative(x))
+            return -Math.Log(1.0 / -x + Math.Sqrt(1.0 / Math.Pow(x, 2.0) + 1.0));
 
-        return Math.Log(1.0 / d + Math.Sqrt(1.0 / Math.Pow(d, 2.0) + 1.0));
+        return Math.Log(1.0 / x + Math.Sqrt(1.0 / Math.Pow(x, 2.0) + 1.0));
     }
 
     /// <summary>
-    ///     Inverse Hyperbolic Secant
+    ///     Arc-hyperbolic secant is inverse of the <see cref="Sech" /> function
+    ///     is defined as Arsech(x) = ln([1 + √(1 − x^2)]/x).
     /// </summary>
-    /// <param name="d"></param>
-    /// <returns></returns>
-    public static double Arsech(double d)
+    /// <param name="x">Value in range: (0, 1].</param>
+    /// <returns>
+    ///     Value in range: [0, +∞).
+    ///     This method returns <see cref="F:System.Double.NaN" /> if <paramref name="x" /> equals
+    ///     <see cref="F:System.Double.NaN" />, <see cref="F:System.Double.NegativeInfinity" />,
+    ///     <see cref="F:System.Double.PositiveInfinity" />, or 0.
+    /// </returns>
+    public static double Asech(double x)
     {
-        if (Math.Abs(d) < double.Epsilon)
+        if (Math.Abs(x) < double.Epsilon)
             return double.NaN;
 
-        if (d is < 0.0 or > 1.0)
+        if (x is < 0.0 or > 1.0)
             return double.NaN;
 
-        return Math.Log(1.0 / d + Math.Sqrt(1.0 / Math.Pow(d, 2.0) - 1.0));
+        return Math.Log(1.0 / x + Math.Sqrt(1.0 / Math.Pow(x, 2.0) - 1.0));
     }
 
-    public static double Arcoth(double d)
+    /// <summary>
+    ///     Arc-hyperbolic cotangent is inverse of the <see cref="Coth" /> function
+    ///     is defined as Arcoth(x) = ln[(1 + x)/(x − 1)]/2.
+    /// </summary>
+    /// <param name="x">Value in range: (−∞, -1)∪(1, +∞).</param>
+    /// <returns>
+    ///     Value in range: (−∞, 0)∪(0, +∞).
+    ///     This method returns <see cref="F:System.Double.NaN" /> if <paramref name="x" /> equals
+    ///     <see cref="F:System.Double.NaN" />, or <paramref name="x" /> in range: [-1, 1].
+    ///     This method returns 0 if <paramref name="x" /> equals <see cref="F:System.Double.NegativeInfinity" />
+    ///     or <see cref="F:System.Double.PositiveInfinity" />.
+    /// </returns>
+    public static double Acoth(double x)
     {
-        if (double.IsInfinity(d))
+        if (double.IsInfinity(x))
             return 0.0;
 
-        if (Math.Abs(d) <= 1.0)
+        if (Math.Abs(x) <= 1.0)
             return double.NaN;
 
-        return Math.Log((d + 1.0) / (d - 1.0)) / 2;
+        return Math.Log((x + 1.0) / (x - 1.0)) / 2;
     }
 
     #endregion
 
+    /// <summary>
+    ///     Converts degrees to radians.
+    /// </summary>
+    /// <param name="degrees">Angle in degrees (any real number).</param>
+    /// <returns>Angle in radians (any real number).</returns>
     public static double DegreesToRadians(double degrees)
     {
         return degrees * Math.PI / 180.0;
     }
 
+    /// <summary>
+    ///     Converts radians to degrees.
+    /// </summary>
+    /// <param name="radians">Angle in radians (any real number).</param>
+    /// <returns>Angle in degrees (any real number).</returns>
     public static double RadiansToDegrees(double radians)
     {
         return radians * 180.0 / Math.PI;
