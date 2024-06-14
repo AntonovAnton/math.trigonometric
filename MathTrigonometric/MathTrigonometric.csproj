@@ -7,7 +7,7 @@
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <Title>Math Trigonometric Functions</Title>
         <Authors>Anton Antonov</Authors>
-        <Description>This C# library provides a comprehensive suite of trigonometric functions, including standard functions (sin, cos, tan, asin, acos, atan) and their hyperbolic counterparts (sinh, cosh, tanh, asinh, acosh, atanh). Additionally, this library includes functions that are missing in .NET: cot, sec, csc, acot, asec, acsc, coth, sech, csch, acoth, asech, and acsch.</Description>
+        <Description>This C# library includes functions that are missing in .NET: cot, sec, csc, acot, asec, acsc, coth, sech, csch, acoth, asech, and acsch. Also, it includes standard functions: sin, cos, tan, asin, acos, atan, sinh, cosh, tanh, asinh, acosh, and atanh.</Description>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <Copyright>Copyright © 2024 Anton Antonov</Copyright>
         <PackageProjectUrl>https://github.com/AntonovAnton/math.trigonometric</PackageProjectUrl>
@@ -15,10 +15,9 @@
         <RepositoryType>git</RepositoryType>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageTags>math; trigonometric; trigonomety; cot; sec; csc; acot; asec; acsc; coth; sech; csch; acoth; asech; acsch;</PackageTags>
-        <PackageReleaseNotes>Fully compatible with .NET Standard 1.0 and higner version.
-Provides a comprehensive suite of trigonometric functions, including standard functions (sin, cos, tan, asin, acos, atan) and their hyperbolic counterparts (sinh, cosh, tanh, asinh, acosh, atanh). Additionally, this library includes functions that are missing in .NET: cot, sec, csc, acot, asec, acsc, coth, sech, csch, acoth, asech, and acsch.</PackageReleaseNotes>
+        <PackageReleaseNotes>Fully compatible with .NET Standard 1.0 and higner version.</PackageReleaseNotes>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
-        <Version>1.0.2</Version>
+        <Version>1.0.3</Version>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

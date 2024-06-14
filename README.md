@@ -1,4 +1,6 @@
 # Math Trigonometric Functions in .NET
+[![NuGet Downloads](https://img.shields.io/nuget/dt/MathTrigonometric?style=for-the-badge)](https://www.nuget.org/packages/MathTrigonometric/)
+[![NuGet Version](https://img.shields.io/nuget/v/MathTrigonometric?style=for-the-badge)](https://www.nuget.org/packages/MathTrigonometric/)
 ## Overview
 This C# library provides implementations of all standard trigonometric functions, including basic functions like sine, cosine, and tangent, as well as their hyperbolic counterparts, inverse functions, and more. This library is designed to offer a comprehensive set of tools for mathematical, engineering, and scientific applications requiring trigonometric calculations.
 ## Missing Trigonometric Functions in .NET
