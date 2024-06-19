@@ -54,7 +54,7 @@ public static class MathTrig
     public static double Tan(double a)
     {
         var cos = Math.Cos(a);
-        if (Math.Abs(cos) < double.Epsilon)
+        if (cos == 0.0)
             return double.NaN;
 
         return Math.Sin(a) / cos;
@@ -73,7 +73,7 @@ public static class MathTrig
     public static double Csc(double a)
     {
         var sin = Math.Sin(a);
-        if (Math.Abs(sin) < double.Epsilon)
+        if (sin == 0.0)
             return double.NaN;
 
         return 1.0 / sin;
@@ -92,7 +92,7 @@ public static class MathTrig
     public static double Sec(double a)
     {
         var cos = Math.Cos(a);
-        if (Math.Abs(cos) < double.Epsilon)
+        if (cos == 0.0)
             return double.NaN;
 
         return 1.0 / cos;
@@ -111,7 +111,7 @@ public static class MathTrig
     public static double Cot(double a)
     {
         var sin = Math.Sin(a);
-        if (Math.Abs(sin) < double.Epsilon)
+        if (sin == 0.0)
             return double.NaN;
 
         return Math.Cos(a) / sin;
@@ -180,7 +180,7 @@ public static class MathTrig
     /// </returns>
     public static double Acsc(double d)
     {
-        return Math.Abs(d) < double.Epsilon ? double.NaN : Math.Asin(1.0 / d);
+        return d == 0.0 ? double.NaN : Math.Asin(1.0 / d);
     }
 
     /// <summary>
@@ -196,7 +196,7 @@ public static class MathTrig
     /// </returns>
     public static double Asec(double d)
     {
-        return Math.Abs(d) < double.Epsilon ? double.NaN : Math.Acos(1.0 / d);
+        return d == 0.0 ? double.NaN : Math.Acos(1.0 / d);
     }
 
     /// <summary>
@@ -212,9 +212,6 @@ public static class MathTrig
     /// </returns>
     public static double Acot(double d)
     {
-        if (Math.Abs(d) < double.Epsilon)
-            return Math.PI / 2;
-
         //the Trigonometric Symmetry is applied: arccot(−x) = π − arccot(x)
         if (IsNegative(d))
             return Math.PI - Math.Atan(1 / -d);
@@ -292,7 +289,7 @@ public static class MathTrig
     public static double Csch(double x)
     {
         var sin = Math.Sinh(x);
-        if (Math.Abs(sin) < double.Epsilon)
+        if (sin == 0.0)
             return double.NaN;
 
         return 1.0 / sin;
@@ -312,7 +309,7 @@ public static class MathTrig
     public static double Sech(double x)
     {
         var cos = Math.Cosh(x);
-        if (Math.Abs(cos) < double.Epsilon)
+        if (cos == 0.0)
             return double.NaN;
 
         return 1.0 / cos;
@@ -331,10 +328,10 @@ public static class MathTrig
     /// </returns>
     public static double Coth(double x)
     {
-        if (Math.Abs(x) < double.Epsilon)
+        if (x == 0.0)
             return double.NaN;
 
-        return 1 / Math.Tanh(x);
+        return 1.0 / Math.Tanh(x);
     }
 
     #endregion
@@ -361,9 +358,9 @@ public static class MathTrig
 
         //the Trigonometric Symmetry is applied: arsinh(−x)=−arsinh(x)
         if (IsNegative(x))
-            return -Math.Log(-x + Math.Sqrt(Math.Pow(x, 2) + 1.0));
+            return -Math.Log(-x + Math.Sqrt(Math.Pow(x, 2.0) + 1.0));
 
-        return Math.Log(x + Math.Sqrt(Math.Pow(x, 2) + 1.0));
+        return Math.Log(x + Math.Sqrt(Math.Pow(x, 2.0) + 1.0));
     }
 
     /// <summary>
@@ -384,7 +381,7 @@ public static class MathTrig
         if (x < 1.0)
             return double.NaN;
 
-        return Math.Log(x + Math.Sqrt(Math.Pow(x, 2) - 1.0));
+        return Math.Log(x + Math.Sqrt(Math.Pow(x, 2.0) - 1.0));
     }
 
     /// <summary>
@@ -411,7 +408,7 @@ public static class MathTrig
         if (Math.Abs(x) > 1.0)
             return double.NaN;
 
-        return Math.Log((1.0 + x) / (1.0 - x)) / 2;
+        return Math.Log((1.0 + x) / (1.0 - x)) / 2.0;
     }
 
     /// <summary>
@@ -428,7 +425,7 @@ public static class MathTrig
     /// </returns>
     public static double Acsch(double x)
     {
-        if (Math.Abs(x) < double.Epsilon)
+        if (x == 0.0)
             return double.NaN;
 
         //the Trigonometric Symmetry is applied: arcsch(−x)=−arcsch(x)
@@ -451,10 +448,7 @@ public static class MathTrig
     /// </returns>
     public static double Asech(double x)
     {
-        if (Math.Abs(x) < double.Epsilon)
-            return double.NaN;
-
-        if (x is < 0.0 or > 1.0)
+        if (x is <= 0.0 or > 1.0)
             return double.NaN;
 
         return Math.Log(1.0 / x + Math.Sqrt(1.0 / Math.Pow(x, 2.0) - 1.0));
@@ -480,7 +474,7 @@ public static class MathTrig
         if (Math.Abs(x) <= 1.0)
             return double.NaN;
 
-        return Math.Log((x + 1.0) / (x - 1.0)) / 2;
+        return Math.Log((x + 1.0) / (x - 1.0)) / 2.0;
     }
 
     #endregion
