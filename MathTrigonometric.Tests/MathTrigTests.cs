@@ -10,6 +10,7 @@ public class MathTrigTests
     [InlineData(-Math.PI / 4, -0.70710678118654757d)]
     [InlineData(-Math.PI / 6, -0.49999999999999994d)]
     [InlineData(0d, 0d)]
+    [InlineData(1d, 0.8414709848078965d)]
     [InlineData(Math.PI / 6, 0.49999999999999994d)]
     [InlineData(Math.PI / 4, 0.70710678118654757d)]
     [InlineData(Math.PI / 3, 0.8660254037844386d)]
@@ -33,6 +34,7 @@ public class MathTrigTests
     [InlineData(-Math.PI / 4, 0.70710678118654757d)]
     [InlineData(-Math.PI / 6, 0.86602540378443871d)]
     [InlineData(0d, 1d)]
+    [InlineData(1d, 0.54030230586813977d)]
     [InlineData(Math.PI / 6, 0.86602540378443871d)]
     [InlineData(Math.PI / 4, 0.70710678118654757d)]
     [InlineData(Math.PI / 3, 0.50000000000000011d)]
@@ -56,6 +58,7 @@ public class MathTrigTests
     [InlineData(-Math.PI / 4, -1d)]
     [InlineData(-Math.PI / 6, -0.57735026918962562d)]
     [InlineData(0d, 0d)]
+    [InlineData(1d, 1.5574077246549021d)]
     [InlineData(Math.PI / 6, 0.57735026918962562d)]
     [InlineData(Math.PI / 4, 1d)]
     [InlineData(Math.PI / 3, 1.7320508075688767d)]
@@ -254,6 +257,8 @@ public class MathTrigTests
     public void MathTrig_Acot_ExpectedValue(double d, double expectedValue)
     {
         var value = MathTrig.Acot(d);
+
+        var v = MathTrig.Cos(2d * MathTrig.Acos(2d));
 
         Assert.Equal(expectedValue, value);
     }

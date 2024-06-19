@@ -17,6 +17,8 @@ The .NET includes basic trigonometric functions (sin, cos, tan, asin, acos, atan
 10. **Acoth (Inverse Hyperbolic Cotangent)**
 11. **Asech (Inverse Hyperbolic Secant)**
 12. **Acsch (Inverse Hyperbolic Cosecant)**
+
+You can find a detailed explanation of the implementation and approach in [my article on Medium](https://medium.com/@AntonAntonov88/missing-trigonometric-functions-in-net-filling-the-gaps-9851ed3d06b9).
 ## Installation
 You can install this library via NuGet Package Manager. To do this, follow these steps:
 1. Open your project in Visual Studio.
