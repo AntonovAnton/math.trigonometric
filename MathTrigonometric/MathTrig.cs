@@ -358,9 +358,9 @@ public static class MathTrig
 
         //the Trigonometric Symmetry is applied: arsinh(−x)=−arsinh(x)
         if (IsNegative(x))
-            return -Math.Log(-x + Math.Sqrt(Math.Pow(x, 2.0) + 1.0));
+            return -Math.Log(-x + Math.Sqrt(x * x + 1.0));
 
-        return Math.Log(x + Math.Sqrt(Math.Pow(x, 2.0) + 1.0));
+        return Math.Log(x + Math.Sqrt(x * x + 1.0));
     }
 
     /// <summary>
@@ -381,7 +381,7 @@ public static class MathTrig
         if (x < 1.0)
             return double.NaN;
 
-        return Math.Log(x + Math.Sqrt(Math.Pow(x, 2.0) - 1.0));
+        return Math.Log(x + Math.Sqrt(x * x - 1.0));
     }
 
     /// <summary>
@@ -430,9 +430,9 @@ public static class MathTrig
 
         //the Trigonometric Symmetry is applied: arcsch(−x)=−arcsch(x)
         if (IsNegative(x))
-            return -Math.Log(1.0 / -x + Math.Sqrt(1.0 / Math.Pow(x, 2.0) + 1.0));
+            return -Math.Log(1.0 / -x + Math.Sqrt(1.0 / (x * x) + 1.0));
 
-        return Math.Log(1.0 / x + Math.Sqrt(1.0 / Math.Pow(x, 2.0) + 1.0));
+        return Math.Log(1.0 / x + Math.Sqrt(1.0 / (x * x) + 1.0));
     }
 
     /// <summary>
@@ -451,7 +451,7 @@ public static class MathTrig
         if (x is <= 0.0 or > 1.0)
             return double.NaN;
 
-        return Math.Log(1.0 / x + Math.Sqrt(1.0 / Math.Pow(x, 2.0) - 1.0));
+        return Math.Log(1.0 / x + Math.Sqrt(1.0 / (x * x) - 1.0));
     }
 
     /// <summary>
