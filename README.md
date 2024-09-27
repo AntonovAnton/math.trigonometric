@@ -30,6 +30,9 @@ Alternatively, you can install the package using the NuGet Package Manager Conso
         Install-Package MathTrigonometric
 
 ## Functions Included
+
+In version [1.1.0](https://github.com/AntonovAnton/math.trigonometric/releases/tag/1.1.0), support for complex numbers has been introduced through overloaded methods for the trigonometric functions listed below. This allows the library to handle both real and complex inputs seamlessly.
+
 ### Basic Trigonometric Functions
 1. **Sin**
 

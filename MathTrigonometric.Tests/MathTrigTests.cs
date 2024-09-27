@@ -1,6 +1,6 @@
 ﻿namespace MathTrigonometric.Tests;
 
-public class MathTrigTests
+public partial class MathTrigTests
 {
     [Theory]
     [InlineData(double.NaN, double.NaN)]
@@ -257,8 +257,6 @@ public class MathTrigTests
     public void MathTrig_Acot_ExpectedValue(double d, double expectedValue)
     {
         var value = MathTrig.Acot(d);
-
-        var v = MathTrig.Cos(2d * MathTrig.Acos(2d));
 
         Assert.Equal(expectedValue, value);
     }
