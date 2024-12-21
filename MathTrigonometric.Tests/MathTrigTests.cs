@@ -1,5 +1,6 @@
 ﻿namespace MathTrigonometric.Tests;
 
+// ReSharper disable once InconsistentNaming
 public partial class MathTrigTests
 {
     [Theory]

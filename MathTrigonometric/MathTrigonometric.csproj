@@ -17,7 +17,7 @@
         <PackageTags>math; trigonometric; trigonometry; cot; sec; csc; acot; asec; acsc; coth; sech; csch; acoth; asech; acsch;</PackageTags>
         <PackageReleaseNotes>It targets .NET Standard 2.0 and higher version. Supports double and complex numbers.</PackageReleaseNotes>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
-        <Version>1.1.0</Version>
+        <Version>1.2.0</Version>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

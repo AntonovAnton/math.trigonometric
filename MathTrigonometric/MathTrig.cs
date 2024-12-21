@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Numerics;
 
+// ReSharper disable InconsistentNaming
+
 namespace MathTrigonometric;
 
 /// <summary>
@@ -23,9 +25,7 @@ public static class MathTrig
     ///     or <see cref="F:System.Double.PositiveInfinity" />.
     /// </returns>
     public static double Sin(double a)
-    {
-        return Math.Sin(a);
-    }
+        => Math.Sin(a);
 
     /// <summary>
     ///     Sine of the specific complex number.
@@ -54,9 +54,7 @@ public static class MathTrig
     ///     or <see cref="F:System.Double.PositiveInfinity" />.
     /// </returns>
     public static double Cos(double a)
-    {
-        return Math.Cos(a);
-    }
+        => Math.Cos(a);
 
     /// <summary>
     ///     Cosine of the specific complex number.
@@ -113,20 +111,20 @@ public static class MathTrig
         //   tan z = (sin(2x) / cosh(2y) + i \tanh(2y)) / (1 + cos(2x) / cosh(2y))
         // which correctly computes the (tiny) real part and the (normal-sized) imaginary part.
 
-        double x2 = 2.0 * z.Real;
-        double y2 = 2.0 * z.Imaginary;
+        var x2 = 2.0 * z.Real;
+        var y2 = 2.0 * z.Imaginary;
         var sin = Math.Sin(x2);
         var cos = Math.Cos(x2);
-        double cosh = Math.Cosh(y2);
+        var cosh = Math.Cosh(y2);
         if (Math.Abs(z.Imaginary) <= 4.0)
         {
-            double D = cos + cosh;
-            return new Complex(sin / D, Math.Sinh(y2) / D);
+            var d = cos + cosh;
+            return new Complex(sin / d, Math.Sinh(y2) / d);
         }
         else
         {
-            double D = 1.0 + cos / cosh;
-            return new Complex(sin / cosh / D, Math.Tanh(y2) / D);
+            var d = 1.0 + cos / cosh;
+            return new Complex(sin / cosh / d, Math.Tanh(y2) / d);
         }
     }
 
@@ -161,8 +159,9 @@ public static class MathTrig
     public static Complex Csc(Complex z)
     {
         var sin = Sin(z);
-        if (sin == Complex.Zero)
-            return new Complex(double.NaN, double.NaN);
+
+        if (IsInfinity(sin))
+            return Complex.Zero;
 
         return Complex.One / sin;
     }
@@ -198,8 +197,9 @@ public static class MathTrig
     public static Complex Sec(Complex z)
     {
         var cos = Cos(z);
-        if (cos == Complex.Zero)
-            return new Complex(double.NaN, double.NaN);
+
+        if (IsInfinity(cos))
+            return Complex.Zero;
 
         return Complex.One / cos;
     }
@@ -234,6 +234,15 @@ public static class MathTrig
     /// </returns>
     public static Complex Cot(Complex z)
     {
+        if (double.IsInfinity(z.Real) || double.IsNaN(z.Real))
+            return new Complex(double.NaN, double.NaN);
+
+        if (double.IsNegativeInfinity(z.Imaginary))
+            return Complex.ImaginaryOne;
+
+        if (double.IsPositiveInfinity(z.Imaginary))
+            return new Complex(0d, -1d);
+
         var sin = Math.Sin(z.Real);
         var cos = Math.Cos(z.Real);
         var coshI = Math.Cosh(z.Imaginary);
@@ -256,9 +265,7 @@ public static class MathTrig
     ///     or <see cref="F:System.Double.PositiveInfinity" />.
     /// </returns>
     public static double Asin(double d)
-    {
-        return Math.Asin(d);
-    }
+        => Math.Asin(d);
 
     /// <summary>
     ///     Arc sine of the specific complex number.
@@ -269,9 +276,7 @@ public static class MathTrig
     ///     This method returns NaN if <paramref name="z" /> equals NaN.
     /// </returns>
     public static Complex Asin(Complex z)
-    {
-        return Complex.Asin(z);
-    }
+        => Complex.Asin(z);
 
     /// <summary>
     ///     Arc cosine is inverse of the <see cref="Cos(double)" /> function.
@@ -284,9 +289,7 @@ public static class MathTrig
     ///     or <see cref="F:System.Double.PositiveInfinity" />.
     /// </returns>
     public static double Acos(double d)
-    {
-        return Math.Acos(d);
-    }
+        => Math.Acos(d);
 
     /// <summary>
     ///     Arc cosine of the specific complex number.
@@ -297,9 +300,7 @@ public static class MathTrig
     ///     This method returns NaN if <paramref name="z" /> equals NaN.
     /// </returns>
     public static Complex Acos(Complex z)
-    {
-        return Complex.Acos(z);
-    }
+        => Complex.Acos(z);
 
     /// <summary>
     ///     Arc tangent is inverse of the <see cref="Tan(double)" /> function.
@@ -313,9 +314,7 @@ public static class MathTrig
     ///     π/2 if <paramref name="d" /> equals <see cref="F:System.Double.PositiveInfinity" />.
     /// </returns>
     public static double Atan(double d)
-    {
-        return Math.Atan(d);
-    }
+        => Math.Atan(d);
 
     /// <summary>
     ///     Arc tangent of the specific complex number.
@@ -327,11 +326,14 @@ public static class MathTrig
     /// </returns>
     public static Complex Atan(Complex z)
     {
-        if (IsPositiveInfinity(z))
-            return new Complex(Math.PI / 2, 0);
-
-        if (IsNegativeInfinity(z))
-            return new Complex(-Math.PI / 2, 0);
+        //TODO: create an issue for dotnet/runtime to fix Complex.Atan method
+        if ((double.IsInfinity(z.Real) && !double.IsInfinity(z.Imaginary)) ||
+            (double.IsInfinity(z.Imaginary) && !double.IsInfinity(z.Real)))
+        {
+            return IsNegative(z.Real) || IsNegative(z.Imaginary)
+                ? new Complex(-Math.PI / 2, 0)
+                : new Complex(Math.PI / 2, 0);
+        }
 
         return Complex.Atan(z);
     }
@@ -348,9 +350,7 @@ public static class MathTrig
     ///     or <see cref="F:System.Double.PositiveInfinity" />.
     /// </returns>
     public static double Acsc(double d)
-    {
-        return Math.Asin(1.0 / d);
-    }
+        => Math.Asin(1.0 / d);
 
     /// <summary>
     ///     Arc cosecant of the specific complex number.
@@ -361,9 +361,7 @@ public static class MathTrig
     ///     This method returns NaN if <paramref name="z" /> equals Zero or NaN.
     /// </returns>
     public static Complex Acsc(Complex z)
-    {
-        return Complex.Asin(Complex.One / z);
-    }
+        => Complex.Asin(Complex.One / z);
 
     /// <summary>
     ///     Arc secant is inverse of the <see cref="Sec(double)" /> function.
@@ -377,9 +375,7 @@ public static class MathTrig
     ///     or <see cref="F:System.Double.PositiveInfinity" />.
     /// </returns>
     public static double Asec(double d)
-    {
-        return Math.Acos(1.0 / d);
-    }
+        => Math.Acos(1.0 / d);
 
     /// <summary>
     ///     Arc secant of the specific complex number.
@@ -390,9 +386,7 @@ public static class MathTrig
     ///     This method returns NaN if <paramref name="z" /> equals Zero or NaN.
     /// </returns>
     public static Complex Asec(Complex z)
-    {
-        return Complex.Acos(Complex.One / z);
-    }
+        => Complex.Acos(Complex.One / z);
 
     /// <summary>
     ///     Arc cotangent is inverse of the <see cref="Coth(double)" />> function.
@@ -456,9 +450,7 @@ public static class MathTrig
     ///     <see cref="F:System.Double.PositiveInfinity" />.
     /// </returns>
     public static double Sinh(double x)
-    {
-        return Math.Sinh(x);
-    }
+        => Math.Sinh(x);
 
     /// <summary>
     ///     Hyperbolic sine of the specific complex number.
@@ -470,7 +462,8 @@ public static class MathTrig
     /// </returns>
     public static Complex Sinh(Complex z)
     {
-        if (IsInfinity(z))
+        //TODO: create an issue for dotnet/runtime to fix Complex.Sinh method
+        if (double.IsInfinity(z.Real) && z.Imaginary == 0d)
             return z;
 
         // Use sinh(z) = -i sin(iz) to compute via sin(z). 
@@ -492,9 +485,7 @@ public static class MathTrig
     ///     <see cref="F:System.Double.PositiveInfinity" />.
     /// </returns>
     public static double Cosh(double x)
-    {
-        return Math.Cosh(x);
-    }
+        => Math.Cosh(x);
 
     /// <summary>
     ///     Hyperbolic cosine of the specific complex number.
@@ -506,7 +497,8 @@ public static class MathTrig
     /// </returns>
     public static Complex Cosh(Complex z)
     {
-        if (IsInfinity(z))
+        //TODO: create an issue for dotnet/runtime to fix Complex.Cosh method
+        if (double.IsInfinity(z.Real) && z.Imaginary == 0d)
             return new Complex(double.PositiveInfinity, 0);
 
         // Use cosh(z) = cos(iz) to compute via cos(z).
@@ -525,9 +517,7 @@ public static class MathTrig
     ///     1 if <paramref name="x" /> equals <see cref="F:System.Double.PositiveInfinity" />.
     /// </returns>
     public static double Tanh(double x)
-    {
-        return Math.Tanh(x);
-    }
+        => Math.Tanh(x);
 
     /// <summary>
     ///     Hyperbolic tangent of the specific complex number.
@@ -575,8 +565,8 @@ public static class MathTrig
     public static Complex Csch(Complex z)
     {
         var sin = Sinh(z);
-        if (sin == Complex.Zero)
-            return new Complex(double.NaN, double.NaN);
+        if (double.IsInfinity(sin.Real) && double.IsInfinity(sin.Imaginary))
+            return Complex.Zero;
 
         return Complex.One / sin;
     }
@@ -609,6 +599,9 @@ public static class MathTrig
     public static Complex Sech(Complex z)
     {
         var cos = Cosh(z);
+        if (double.IsInfinity(cos.Real) && double.IsInfinity(cos.Imaginary))
+            return Complex.Zero;
+
         return Complex.One / cos;
     }
 
@@ -641,10 +634,8 @@ public static class MathTrig
     /// </returns>
     public static Complex Coth(Complex z)
     {
-        if (z == Complex.Zero)
-            return new Complex(double.NaN, double.NaN);
-
-        return Complex.One / Tanh(z);
+        var tanh = Tanh(z);
+        return Complex.One / tanh;
     }
 
     #endregion
@@ -652,7 +643,8 @@ public static class MathTrig
     #region Inverse Hyperbolic Trigonometric Functions
 
     /// <summary>
-    ///     Arc-hyperbolic sine is inverse of the <see cref="Sinh(double)" /> function is defined as Arsinh(x) = ln[x + √(x^2 + 1)].
+    ///     Arc-hyperbolic sine is inverse of the <see cref="Sinh(double)" /> function is defined as Arsinh(x) = ln[x + √(x^2 +
+    ///     1)].
     /// </summary>
     /// <param name="x">Any real number.</param>
     /// <returns>
@@ -686,8 +678,11 @@ public static class MathTrig
     /// </returns>
     public static Complex Asinh(Complex z)
     {
-        if (IsInfinity(z))
-            return z;
+        if (double.IsPositiveInfinity(z.Real) && !double.IsInfinity(z.Imaginary))
+            return new Complex(double.PositiveInfinity, 0d);
+
+        if (double.IsNegativeInfinity(z.Real) && !double.IsInfinity(z.Imaginary))
+            return new Complex(double.NegativeInfinity, 0d);
 
         //the Trigonometric Symmetry is applied: arsinh(−z)=−arsinh(z)
         if (IsNegative(z.Real))
@@ -697,7 +692,8 @@ public static class MathTrig
     }
 
     /// <summary>
-    ///     Arc-hyperbolic cosine is inverse of the <see cref="Cosh(double)" /> function is defined as Arcosh(x) = ln[x + √(x^2 - 1)].
+    ///     Arc-hyperbolic cosine is inverse of the <see cref="Cosh(double)" /> function is defined as Arcosh(x) = ln[x + √(x^2
+    ///     - 1)].
     /// </summary>
     /// <param name="x">Value in range: [1, +∞).</param>
     /// <returns>
@@ -727,8 +723,11 @@ public static class MathTrig
     /// </returns>
     public static Complex Acosh(Complex z)
     {
-        if (IsInfinity(z))
+        if (IsPositiveInfinity(z))
             return new Complex(double.PositiveInfinity, 0d);
+
+        if (IsNegativeInfinity(z))
+            return new Complex(double.PositiveInfinity, double.NaN);
 
         return Complex.Log(z + Complex.Sqrt(z * z - Complex.One));
     }
@@ -776,11 +775,17 @@ public static class MathTrig
         if (z == -Complex.One)
             return new Complex(double.NegativeInfinity, 0d);
 
-        if (IsPositiveInfinity(z))
+        if ((double.IsPositiveInfinity(z.Real) && !double.IsInfinity(z.Imaginary)) ||
+            (!double.IsInfinity(z.Real) && double.IsNegativeInfinity(z.Imaginary)))
             return new Complex(0d, -Math.PI / 2);
 
-        if (IsNegativeInfinity(z))
+        if ((double.IsNegativeInfinity(z.Real) && !double.IsInfinity(z.Imaginary)) ||
+            (!double.IsInfinity(z.Real) && double.IsPositiveInfinity(z.Imaginary)))
             return new Complex(0d, Math.PI / 2);
+
+        //the Trigonometric Symmetry is applied: artanh(−x)=−artanh(x)
+        if (IsNegative(z.Real))
+            return -Complex.Log((1.0 - z) / (1.0 + z)) / 2.0;
 
         return Complex.Log((1.0 + z) / (1.0 - z)) / 2.0;
     }
@@ -868,8 +873,12 @@ public static class MathTrig
         if (z == Complex.Zero)
             return new Complex(double.NaN, double.NaN);
 
-        if (IsInfinity(z))
+        if ((double.IsInfinity(z.Real) && !double.IsInfinity(z.Imaginary)) ||
+            (!double.IsInfinity(z.Real) && double.IsNegativeInfinity(z.Imaginary)))
             return new Complex(0d, Math.PI / 2);
+
+        if (!double.IsInfinity(z.Real) && double.IsPositiveInfinity(z.Imaginary))
+            return new Complex(0d, -Math.PI / 2);
 
         var zz = z * z;
         if (zz == Complex.Zero)
@@ -917,8 +926,13 @@ public static class MathTrig
         if (z == -Complex.One)
             return new Complex(double.NegativeInfinity, 0d);
 
-        if (IsInfinity(z))
+        if ((double.IsInfinity(z.Real) && !double.IsInfinity(z.Imaginary)) ||
+            (!double.IsInfinity(z.Real) && double.IsInfinity(z.Imaginary)))
             return Complex.Zero;
+
+        //the Trigonometric Symmetry is applied: arcoth(−x)=−arcoth(x)
+        if (IsNegative(z.Real))
+            return -Complex.Log((z - 1.0) / (z + 1.0)) / 2.0;
 
         return Complex.Log((z + 1.0) / (z - 1.0)) / 2.0;
     }
@@ -931,9 +945,7 @@ public static class MathTrig
     /// <param name="degrees">Angle in degrees (any real number).</param>
     /// <returns>Angle in radians (any real number).</returns>
     public static double DegreesToRadians(double degrees)
-    {
-        return degrees * Math.PI / 180.0;
-    }
+        => degrees * Math.PI / 180.0;
 
     /// <summary>
     ///     Converts radians to degrees.
@@ -941,27 +953,17 @@ public static class MathTrig
     /// <param name="radians">Angle in radians (any real number).</param>
     /// <returns>Angle in degrees (any real number).</returns>
     public static double RadiansToDegrees(double radians)
-    {
-        return radians * 180.0 / Math.PI;
-    }
+        => radians * 180.0 / Math.PI;
 
     private static bool IsNegative(double d)
-    {
-        return BitConverter.DoubleToInt64Bits(d) < 0;
-    }
+        => BitConverter.DoubleToInt64Bits(d) < 0;
 
     private static bool IsNegativeInfinity(Complex value)
-    {
-        return (value.Imaginary == 0.0) && double.IsNegativeInfinity(value.Real);
-    }
+        => value.Imaginary == 0.0 && double.IsNegativeInfinity(value.Real);
 
     private static bool IsPositiveInfinity(Complex value)
-    {
-        return (value.Imaginary == 0.0) && double.IsPositiveInfinity(value.Real);
-    }
+        => value.Imaginary == 0.0 && double.IsPositiveInfinity(value.Real);
 
     private static bool IsInfinity(Complex value)
-    {
-        return (value.Imaginary == 0.0) && double.IsInfinity(value.Real);
-    }
+        => double.IsInfinity(value.Real) || double.IsInfinity(value.Imaginary);
 }
