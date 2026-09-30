@@ -1,4 +1,7 @@
 # Math Trigonometric Functions in .NET
+
+NuGet package: `MathTrigonometric`
+
 [![NuGet Downloads](https://img.shields.io/nuget/dt/MathTrigonometric?style=for-the-badge)](https://www.nuget.org/packages/MathTrigonometric/)
 [![NuGet Version](https://img.shields.io/nuget/v/MathTrigonometric?style=for-the-badge)](https://www.nuget.org/packages/MathTrigonometric/)
 ## Overview
@@ -19,19 +22,12 @@ The .NET includes basic trigonometric functions (sin, cos, tan, asin, acos, atan
 12. **Acsch (Inverse Hyperbolic Cosecant)**
 
 You can find a detailed explanation of the implementation and approach in [my article on Medium](https://medium.com/@AntonAntonov88/missing-trigonometric-functions-in-net-filling-the-gaps-9851ed3d06b9).
-## Installation
-You can install this library via NuGet Package Manager. To do this, follow these steps:
-1. Open your project in Visual Studio.
-2. Go to Tools > NuGet Package Manager > Manage NuGet Packages for Solution.
-3. Search for MathTrigonometric.
-4. Select the package and click Install.
-Alternatively, you can install the package using the NuGet Package Manager Console:
-
-        Install-Package MathTrigonometric
 
 ## Functions Included
 
-In version [1.1.0](https://github.com/AntonovAnton/math.trigonometric/releases/tag/1.1.0), support for complex numbers has been introduced through overloaded methods for the trigonometric functions listed below. This allows the library to handle both real and complex inputs seamlessly.
+In version [1.1.0](https://github.com/AntonovAnton/math.trigonometric/releases/tag/1.1.0), support for `Complex` numbers has been introduced through overloaded methods for the trigonometric functions listed below. This allows the library to handle both real and complex inputs seamlessly.
+
+In version [1.3.0](https://github.com/AntonovAnton/math.trigonometric/releases/tag/1.3.0), support for `float` and `Half` numbers has been introduced through overloaded. 
 
 ### Basic Trigonometric Functions
 1. **Sin**
