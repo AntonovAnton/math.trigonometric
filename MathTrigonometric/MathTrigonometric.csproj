@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFrameworks>netstandard2.0;net8.0;net9.0;net10.0</TargetFrameworks>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -15,28 +15,58 @@
         <RepositoryType>git</RepositoryType>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageTags>math; trigonometric; trigonometry; cot; sec; csc; acot; asec; acsc; coth; sech; csch; acoth; asech; acsch;</PackageTags>
-        <PackageReleaseNotes>It targets .NET Standard 2.0 and higher version. Supports double and complex numbers.</PackageReleaseNotes>
+        <PackageReleaseNotes>It targets .NET Standard 2.0 and higher version. Supports double, float, Half and complex numbers.</PackageReleaseNotes>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
-        <Version>1.2.0</Version>
+        <Version>1.3.0</Version>
+        <PackageId>MathTrigonometric</PackageId>
+        <Product>MathTrigonometric</Product>
+
+        <!-- Performance Optimizations for Library (configuration-independent) -->
+        <Deterministic>true</Deterministic>
+
+        <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+        <ProduceReferenceAssemblyInPackage>true</ProduceReferenceAssemblyInPackage>
+
+        <!-- Code quality and performance analysis -->
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <AnalysisLevel>latest</AnalysisLevel>
+        <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+
+        <!-- Enforces AOT and Trim compatibility checks during your builds -->
+        <IsAotCompatible>true</IsAotCompatible>
+
+        <!-- (Optional) Enables strict trimming checks -->
+        <IsTrimmable>true</IsTrimmable>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-      <WarningLevel>9999</WarningLevel>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+        <!-- Debug configuration - NO optimizations for better debugging -->
+        <Optimize>false</Optimize>
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-      <WarningLevel>9999</WarningLevel>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+        <!-- Release configuration - Full optimizations -->
+        <Optimize>true</Optimize>
+        <DebugType>embedded</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <EmbedAllSources>true</EmbedAllSources>
     </PropertyGroup>
 
     <ItemGroup>
-      <None Include="..\LICENSE">
-        <Pack>True</Pack>
-        <PackagePath>\</PackagePath>
-      </None>
-      <None Include="..\README.md">
-        <Pack>True</Pack>
-        <PackagePath>\</PackagePath>
-      </None>
+        <None Include="..\LICENSE">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+        <None Include="..\README.md">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
     </ItemGroup>
 
 </Project>

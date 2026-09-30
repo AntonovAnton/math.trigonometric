@@ -1,6 +1,7 @@
 ﻿namespace MathTrigonometric.Tests;
 
 // ReSharper disable once InconsistentNaming
+
 public partial class MathTrigTests
 {
     [Theory]
@@ -24,7 +25,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Sin(a);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -48,7 +49,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Cos(a);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -72,7 +73,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Tan(a);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -97,7 +98,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Csc(a);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -122,7 +123,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Sec(a);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -137,15 +138,15 @@ public partial class MathTrigTests
     [InlineData(Math.PI / 4, 1d)]
     [InlineData(Math.PI / 3, 1 / 1.7320508075688767d)]
     [InlineData(Math.PI / 2, 1 / 16331239353195370d)]
-    [InlineData(-Math.PI, -1d / -1.2246467991473532E-16d)]
-    [InlineData(Math.PI, -1d / 1.2246467991473532E-16d)]
+    [InlineData(-Math.PI, 8165619676597685d)]
+    [InlineData(Math.PI, -8165619676597685d)]
     [InlineData(double.PositiveInfinity, double.NaN)]
     [InlineData(double.NegativeInfinity, double.NaN)]
     public void MathTrig_Cot_ExpectedValue(double a, double expectedValue)
     {
         var value = MathTrig.Cot(a);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -164,7 +165,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Asin(d);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -183,7 +184,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Acos(d);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -202,7 +203,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Atan(d);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -221,7 +222,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Acsc(d);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -240,7 +241,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Asec(d);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -259,7 +260,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Acot(d);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -278,7 +279,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Sinh(x);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -297,7 +298,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Cosh(x);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -316,7 +317,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Tanh(x);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -335,7 +336,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Csch(x);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -354,7 +355,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Sech(x);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -373,7 +374,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Coth(x);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -392,7 +393,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Asinh(x);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -411,7 +412,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Acosh(x);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -430,7 +431,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Atanh(x);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -449,7 +450,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Acsch(x);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -468,7 +469,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Asech(x);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -487,7 +488,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.Acoth(x);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -511,7 +512,7 @@ public partial class MathTrigTests
     {
         var value = MathTrig.DegreesToRadians(a);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 
     [Theory]
@@ -532,6 +533,6 @@ public partial class MathTrigTests
     {
         var value = MathTrig.RadiansToDegrees(a);
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue, value, double.Epsilon);
     }
 }

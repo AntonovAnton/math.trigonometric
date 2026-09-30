@@ -1,0 +1,134 @@
+name: Publish NuGet Packages
+
+on:
+  push:
+    branches:
+      - main
+
+# id-token: write  — required for NuGet Trusted Publishing via OIDC (no API keys needed)
+# contents: write  — required to create git tags and GitHub Releases
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  # ────────────────────────────────────────────────────────────────────────────
+  # 1. Read version from csproj file
+  # ────────────────────────────────────────────────────────────────────────────
+  read-version:
+    name: Read & Validate Versions
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.read.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read and validate versions
+        id: read
+        run: |
+          VERSION=$(grep -oP '(?<=<Version>)[^<]+' MathEvaluation/MathEvaluation.csproj | tr -d '[:space:]')
+
+          echo "MathTrigonometric version:                       $VERSION"
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # 2. Run tests — publishing is blocked if any test fails
+  # ────────────────────────────────────────────────────────────────────────────
+  run-tests:
+    name: Run Tests
+    needs: read-version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Run tests
+        run: dotnet test --configuration Release --verbosity normal
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # 3. Build, pack and publish MathTrigonometric
+  # ────────────────────────────────────────────────────────────────────────────
+  publish-mathtrigonometric:
+    name: Publish MathTrigonometric
+    needs: [read-version, run-tests]
+    runs-on: ubuntu-latest
+    environment: production
+    outputs:
+      published: ${{ steps.publish.outputs.published }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Check if MathTrigonometric ${{ needs.read-version.outputs.version }} is already published
+        id: check
+        env:
+          VERSION: ${{ needs.read-version.outputs.version }}
+        run: |
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://api.nuget.org/v3-flatcontainer/mathtrigonometric/${VERSION}/mathtrigonometric.${VERSION}.nupkg")
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "MathTrigonometric $VERSION is already published — skipping."
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "MathTrigonometric $VERSION is not yet published."
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build MathTrigonometric
+        if: steps.check.outputs.skip == 'false'
+        run: dotnet build MathEvaluation/MathEvaluation.csproj -c Release
+
+      - name: Pack MathTrigonometric
+        if: steps.check.outputs.skip == 'false'
+        run: dotnet pack MathEvaluation/MathEvaluation.csproj -c Release -o ./nupkgs --no-build
+
+      - name: NuGet login (OIDC)
+        if: steps.check.outputs.skip == 'false'
+        uses: NuGet/login@v1
+        id: nuget-login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      - name: Publish MathTrigonometric to NuGet (Trusted Publishing)
+        if: steps.check.outputs.skip == 'false'
+        id: publish
+        env:
+          VERSION: ${{ needs.read-version.outputs.version }}
+        run: |
+          dotnet nuget push "./nupkgs/MathTrigonometric.${VERSION}.nupkg" \
+            --source https://api.nuget.org/v3/index.json \
+            --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}"
+          echo "published=true" >> $GITHUB_OUTPUT
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # 4. Tag the commit and create a GitHub Release with auto-generated notes
+  #    Runs only when MathTrigonometric was newly published in this workflow run
+  # ────────────────────────────────────────────────────────────────────────────
+  create-release:
+    name: Tag & Create GitHub Release
+    needs: [read-version, publish-mathtrigonometric]
+    if: needs.publish-mathtrigonometric.outputs.published == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history so GitHub can generate meaningful release notes
+
+      - name: Create tag v${{ needs.read-version.outputs.version }} and GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.read-version.outputs.version }}
+        run: |
+          gh release create "v${VERSION}" \
+            --title "v${VERSION}" \
+            --generate-notes \
+            --latest
