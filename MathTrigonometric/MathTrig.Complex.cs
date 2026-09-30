@@ -1,12 +1,9 @@
-﻿#if NET8_0_OR_GREATER
-
-using System;
+﻿using System;
 using System.Numerics;
 
 // ReSharper disable InconsistentNaming
 
 namespace MathTrigonometric;
-
 
 public static partial class MathTrig
 {
@@ -504,5 +501,3 @@ public static partial class MathTrig
 
     #endregion
 }
-
-#endif
