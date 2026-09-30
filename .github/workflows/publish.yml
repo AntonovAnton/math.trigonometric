@@ -26,7 +26,7 @@ jobs:
       - name: Read and validate versions
         id: read
         run: |
-          VERSION=$(grep -oP '(?<=<Version>)[^<]+' MathEvaluation/MathEvaluation.csproj | tr -d '[:space:]')
+          VERSION=$(grep -oP '(?<=<Version>)[^<]+' MathTrigonometric/MathTrigonometric.csproj | tr -d '[:space:]')
 
           echo "MathTrigonometric version:                       $VERSION"
 
@@ -85,11 +85,11 @@ jobs:
 
       - name: Build MathTrigonometric
         if: steps.check.outputs.skip == 'false'
-        run: dotnet build MathEvaluation/MathEvaluation.csproj -c Release
+        run: dotnet build MathTrigonometric/MathTrigonometric.csproj -c Release
 
       - name: Pack MathTrigonometric
         if: steps.check.outputs.skip == 'false'
-        run: dotnet pack MathEvaluation/MathEvaluation.csproj -c Release -o ./nupkgs --no-build
+        run: dotnet pack MathTrigonometric/MathTrigonometric.csproj -c Release -o ./nupkgs --no-build
 
       - name: NuGet login (OIDC)
         if: steps.check.outputs.skip == 'false'
