@@ -200,8 +200,13 @@ public partial class MathTrigTests
         // the double closest to π/2 is not a pole: tan(1.5707963267948966) = 1.633123935319537E+16
         Assert.Equal(new Complex(1.633123935319537E+16, 0d), MathTrig.Tan(new Complex(Math.PI / 2, 0d)));
 
-        // tan(π/2 + 1e-10 i): cos² x + sinh² y is evaluated without cancellation
-        AssertComplexClose(Complex.Sin(new Complex(Math.PI / 2, 1e-10)) / Complex.Cos(new Complex(Math.PI / 2, 1e-10)),
-            MathTrig.Tan(new Complex(Math.PI / 2, 1e-10)), 1e-9);
+        // tan(π/2 + 1e-10 i): cos² x + sinh² y is evaluated without cancellation.
+        // With δ = π/2 − x = cos x (to full precision), tan(x + iy) = cot(δ − iy) = 1/(δ − iy) · (1 + O(|δ − iy|²)),
+        // so the expected value is (δ + iy)/(δ² + y²) to within 1e-20 relative. The runtime's Complex.Sin/Complex.Cos
+        // is not used as the reference: its quotient is inaccurate this close to the pole on some .NET versions.
+        const double y = 1e-10;
+        var delta = Math.Cos(Math.PI / 2);
+        var expected = new Complex(delta, y) / (delta * delta + y * y);
+        AssertComplexClose(expected, MathTrig.Tan(new Complex(Math.PI / 2, y)), 1e-14);
     }
 }
