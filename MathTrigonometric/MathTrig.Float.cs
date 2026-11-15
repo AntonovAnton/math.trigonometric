@@ -6,7 +6,6 @@ using System;
 
 namespace MathTrigonometric;
 
-
 public static partial class MathTrig
 {
     #region Fundamental Trigonometric Functions
@@ -169,7 +168,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Acsc(float d)
-        => MathF.Asin(1.0f / d);
+        => (float)Acsc((double)d);
 
     /// <summary>
     ///     Arc secant is inverse of the <see cref="Sec(float)" /> function.
@@ -183,7 +182,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Asec(float d)
-        => MathF.Acos(1.0f / d);
+        => (float)Asec((double)d);
 
     /// <summary>
     ///     Arc cotangent is inverse of the <see cref="Coth(float)" />> function.
@@ -267,13 +266,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Csch(float x)
-    {
-        var sin = MathF.Sinh(x);
-        if (sin == 0.0f)
-            return float.NaN;
-
-        return 1.0f / sin;
-    }
+        => (float)Csch((double)x);
 
     /// <summary>
     ///     Hyperbolic secant is defined as Sech(x) = 2/(e^x + e^−x).
@@ -287,10 +280,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Sech(float x)
-    {
-        var cos = MathF.Cosh(x);
-        return 1.0f / cos;
-    }
+        => (float)Sech((double)x);
 
     /// <summary>
     ///     Hyperbolic cotangent is defined as Coth(x) = (e^x + e^−x)/(e^x − e^−x).
@@ -330,16 +320,7 @@ public static partial class MathTrig
     ///     <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Asinh(float x)
-    {
-        if (float.IsInfinity(x))
-            return x;
-
-        //the Trigonometric Symmetry is applied: arsinh(−x)=−arsinh(x)
-        if (IsNegative(x))
-            return -MathF.Log(-x + MathF.Sqrt(x * x + 1.0f));
-
-        return MathF.Log(x + MathF.Sqrt(x * x + 1.0f));
-    }
+        => (float)Asinh((double)x);
 
     /// <summary>
     ///     Arc-hyperbolic cosine is inverse of the <see cref="Cosh(float)" /> function is defined as Arcosh(x) = ln[x + √(x^2
@@ -356,12 +337,7 @@ public static partial class MathTrig
     ///     <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Acosh(float x)
-    {
-        if (x < 1.0f)
-            return float.NaN;
-
-        return MathF.Log(x + MathF.Sqrt(x * x - 1.0f));
-    }
+        => (float)Acosh((double)x);
 
     /// <summary>
     ///     Arc-hyperbolic tangent is inverse of the <see cref="Tanh(float)" /> function
@@ -377,18 +353,7 @@ public static partial class MathTrig
     ///     <see cref="F:System.Single.PositiveInfinity" /> if <paramref name="x" /> equals 1.
     /// </returns>
     public static float Atanh(float x)
-    {
-        if (MathF.Abs(x + 1.0f) < float.Epsilon)
-            return float.NegativeInfinity;
-
-        if (MathF.Abs(x - 1.0f) < float.Epsilon)
-            return float.PositiveInfinity;
-
-        if (MathF.Abs(x) > 1.0f)
-            return float.NaN;
-
-        return MathF.Log((1.0f + x) / (1.0f - x)) / 2.0f;
-    }
+        => (float)Atanh((double)x);
 
     /// <summary>
     ///     Arc-hyperbolic cosecant is inverse of the <see cref="Cosh(float)" /> function
@@ -403,16 +368,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Acsch(float x)
-    {
-        if (x == 0.0f)
-            return float.NaN;
-
-        //the Trigonometric Symmetry is applied: arcsch(−x)=−arcsch(x)
-        if (IsNegative(x))
-            return -MathF.Log(1.0f / -x + MathF.Sqrt(1.0f / (x * x) + 1.0f));
-
-        return MathF.Log(1.0f / x + MathF.Sqrt(1.0f / (x * x) + 1.0f));
-    }
+        => (float)Acsch((double)x);
 
     /// <summary>
     ///     Arc-hyperbolic secant is inverse of the <see cref="Sech(float)" /> function
@@ -426,12 +382,7 @@ public static partial class MathTrig
     ///     <see cref="F:System.Single.PositiveInfinity" />, or 0.
     /// </returns>
     public static float Asech(float x)
-    {
-        if (x is <= 0.0f or > 1.0f)
-            return float.NaN;
-
-        return MathF.Log(1.0f / x + MathF.Sqrt(1.0f / (x * x) - 1.0f));
-    }
+        => (float)Asech((double)x);
 
     /// <summary>
     ///     Arc-hyperbolic cotangent is inverse of the <see cref="Coth(float)" /> function
@@ -446,15 +397,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Acoth(float x)
-    {
-        if (float.IsInfinity(x))
-            return 0.0f;
-
-        if (MathF.Abs(x) <= 1.0f)
-            return float.NaN;
-
-        return MathF.Log((x + 1.0f) / (x - 1.0f)) / 2.0f;
-    }
+        => (float)Acoth((double)x);
 
     #endregion
 

@@ -172,7 +172,14 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Double.PositiveInfinity" />.
     /// </returns>
     public static double Acsc(double d)
-        => Math.Asin(1.0 / d);
+    {
+        var a = Math.Abs(d);
+        if (!(a >= 1.0))
+            return double.NaN;
+
+        // asin(1/d) = atan(1/√(d² − 1)); a − 1 is exact near 1, where asin(1/d) would amplify the rounding of 1/d
+        return CopySign(Math.Atan2(1.0, Math.Sqrt(a - 1.0) * Math.Sqrt(a + 1.0)), d);
+    }
 
     /// <summary>
     ///     Arc secant is inverse of the <see cref="Sec(double)" /> function.
@@ -186,7 +193,14 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Double.PositiveInfinity" />.
     /// </returns>
     public static double Asec(double d)
-        => Math.Acos(1.0 / d);
+    {
+        var a = Math.Abs(d);
+        if (!(a >= 1.0))
+            return double.NaN;
+
+        // acos(1/d) = atan2(√(d² − 1), sign(d)); a − 1 is exact near 1, where acos(1/d) would amplify the rounding of 1/d
+        return Math.Atan2(Math.Sqrt(a - 1.0) * Math.Sqrt(a + 1.0), IsNegative(d) ? -1.0 : 1.0);
+    }
 
     /// <summary>
     ///     Arc cotangent is inverse of the <see cref="Coth(double)" />> function.
@@ -271,6 +285,11 @@ public static partial class MathTrig
     /// </returns>
     public static double Csch(double x)
     {
+        // for |x| > 20, csch x = 2e^−|x| / (1 − e^−2|x|) = ±2e^−|x| to full precision, also where sinh x overflows
+        var a = Math.Abs(x);
+        if (a > 20.0)
+            return CopySign(2.0 * Math.Exp(-a), x);
+
         var sin = Math.Sinh(x);
         if (sin == 0.0)
             return double.NaN;
@@ -291,6 +310,11 @@ public static partial class MathTrig
     /// </returns>
     public static double Sech(double x)
     {
+        // for |x| > 20, sech x = 2e^−|x| / (1 + e^−2|x|) = 2e^−|x| to full precision, also where cosh x overflows
+        var a = Math.Abs(x);
+        if (a > 20.0)
+            return 2.0 * Math.Exp(-a);
+
         var cos = Math.Cosh(x);
         return 1.0 / cos;
     }
@@ -333,16 +357,7 @@ public static partial class MathTrig
     ///     <see cref="F:System.Double.PositiveInfinity" />.
     /// </returns>
     public static double Asinh(double x)
-    {
-        if (double.IsInfinity(x))
-            return x;
-
-        //the Trigonometric Symmetry is applied: arsinh(−x)=−arsinh(x)
-        if (IsNegative(x))
-            return -Math.Log(-x + Math.Sqrt(x * x + 1.0));
-
-        return Math.Log(x + Math.Sqrt(x * x + 1.0));
-    }
+        => RealAsinh(x);
 
     /// <summary>
     ///     Arc-hyperbolic cosine is inverse of the <see cref="Cosh(double)" /> function is defined as Arcosh(x) = ln[x + √(x^2
@@ -360,10 +375,15 @@ public static partial class MathTrig
     /// </returns>
     public static double Acosh(double x)
     {
-        if (x < 1.0)
+        if (!(x >= 1.0))
             return double.NaN;
 
-        return Math.Log(x + Math.Sqrt(x * x - 1.0));
+        // ln(x + √(x² − 1)) overflows for large x and loses precision near 1
+        if (x > 1e8)
+            return Math.Log(x) + Ln2;
+
+        var t = x - 1.0;
+        return Log1p(t + Math.Sqrt(t * (t + 2.0)));
     }
 
     /// <summary>
@@ -381,16 +401,15 @@ public static partial class MathTrig
     /// </returns>
     public static double Atanh(double x)
     {
-        if (Math.Abs(x + 1.0) < double.Epsilon)
-            return double.NegativeInfinity;
-
-        if (Math.Abs(x - 1.0) < double.Epsilon)
-            return double.PositiveInfinity;
-
-        if (Math.Abs(x) > 1.0)
+        var a = Math.Abs(x);
+        if (!(a <= 1.0))
             return double.NaN;
 
-        return Math.Log((1.0 + x) / (1.0 - x)) / 2.0;
+        if (a == 1.0)
+            return CopySign(double.PositiveInfinity, x);
+
+        // ln[(1 + x)/(1 − x)]/2 = log1p(2|x|/(1 − |x|))/2 with the sign of x; accurate for small |x|
+        return CopySign(Log1p(2.0 * a / (1.0 - a)) / 2.0, x);
     }
 
     /// <summary>
@@ -410,11 +429,9 @@ public static partial class MathTrig
         if (x == 0.0)
             return double.NaN;
 
-        //the Trigonometric Symmetry is applied: arcsch(−x)=−arcsch(x)
-        if (IsNegative(x))
-            return -Math.Log(1.0 / -x + Math.Sqrt(1.0 / (x * x) + 1.0));
-
-        return Math.Log(1.0 / x + Math.Sqrt(1.0 / (x * x) + 1.0));
+        // arcsch x = arsinh(1/x); for tiny |x| use ln(2/|x|) directly, since 1/x may overflow
+        var a = Math.Abs(x);
+        return CopySign(a < 1e-8 ? Ln2 - Math.Log(a) : RealAsinh(1.0 / a), x);
     }
 
     /// <summary>
@@ -430,10 +447,11 @@ public static partial class MathTrig
     /// </returns>
     public static double Asech(double x)
     {
-        if (x is <= 0.0 or > 1.0)
+        if (!(x > 0.0 && x <= 1.0))
             return double.NaN;
 
-        return Math.Log(1.0 / x + Math.Sqrt(1.0 / (x * x) - 1.0));
+        // ln([1 + √(1 − x²)]/x) = log1p(√((1 − x)(1 + x))) − ln x: no overflow for tiny x, no cancellation near 1
+        return Log1p(Math.Sqrt((1.0 - x) * (1.0 + x))) - Math.Log(x);
     }
 
     /// <summary>
@@ -450,13 +468,12 @@ public static partial class MathTrig
     /// </returns>
     public static double Acoth(double x)
     {
-        if (double.IsInfinity(x))
-            return 0.0;
-
-        if (Math.Abs(x) <= 1.0)
+        var a = Math.Abs(x);
+        if (!(a > 1.0))
             return double.NaN;
 
-        return Math.Log((x + 1.0) / (x - 1.0)) / 2.0;
+        // ln[(x + 1)/(x − 1)]/2 = log1p(2/(|x| − 1))/2 with the sign of x; |x| − 1 is exact near 1
+        return CopySign(Log1p(2.0 / (a - 1.0)) / 2.0, x);
     }
 
     #endregion
@@ -479,13 +496,4 @@ public static partial class MathTrig
 
     private static bool IsNegative(double d)
         => BitConverter.DoubleToInt64Bits(d) < 0;
-
-    private static bool IsNegativeInfinity(Complex value)
-        => value.Imaginary == 0.0 && double.IsNegativeInfinity(value.Real);
-
-    private static bool IsPositiveInfinity(Complex value)
-        => value.Imaginary == 0.0 && double.IsPositiveInfinity(value.Real);
-
-    private static bool IsInfinity(Complex value)
-        => double.IsInfinity(value.Real) || double.IsInfinity(value.Imaginary);
 }

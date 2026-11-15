@@ -1,7 +1,6 @@
 ﻿namespace MathTrigonometric.Tests;
 
 // ReSharper disable once InconsistentNaming
-
 public partial class MathTrigTests
 {
     [Theory]
@@ -231,7 +230,7 @@ public partial class MathTrigTests
     [InlineData(double.Epsilon, double.NaN)]
     [InlineData(0.5d, double.NaN)]
     [InlineData(1d, 0d)]
-    [InlineData(2d, 1.0471975511965979d)] //PI / 3
+    [InlineData(2d, 1.0471975511965976d)] //PI / 3
     [InlineData(double.PositiveInfinity, Math.PI / 2)]
     [InlineData(-0.5d, double.NaN)]
     [InlineData(-1d, Math.PI)]
@@ -380,13 +379,13 @@ public partial class MathTrigTests
     [Theory]
     [InlineData(double.NaN, double.NaN)]
     [InlineData(0d, 0d)]
-    [InlineData(double.Epsilon, 0d)]
+    [InlineData(double.Epsilon, 5E-324d)]
     [InlineData(0.5d, 0.48121182505960347d)]
-    [InlineData(1d, 0.88137358701954294d)]
+    [InlineData(1d, 0.881373587019543d)]
     [InlineData(2d, 1.4436354751788103d)]
     [InlineData(double.PositiveInfinity, double.PositiveInfinity)]
     [InlineData(-0.5d, -0.48121182505960347d)]
-    [InlineData(-1d, -0.88137358701954294d)]
+    [InlineData(-1d, -0.881373587019543d)]
     [InlineData(-2d, -1.4436354751788103d)]
     [InlineData(double.NegativeInfinity, double.NegativeInfinity)]
     public void MathTrig_Asinh_ExpectedValue(double x, double expectedValue)
@@ -418,7 +417,7 @@ public partial class MathTrigTests
     [Theory]
     [InlineData(double.NaN, double.NaN)]
     [InlineData(0d, 0d)]
-    [InlineData(double.Epsilon, 0d)]
+    [InlineData(double.Epsilon, 5E-324d)]
     [InlineData(0.5d, 0.54930614433405489d)]
     [InlineData(1d, double.PositiveInfinity)]
     [InlineData(2d, double.NaN)]
@@ -437,13 +436,13 @@ public partial class MathTrigTests
     [Theory]
     [InlineData(double.NaN, double.NaN)]
     [InlineData(0d, double.NaN)]
-    [InlineData(double.Epsilon, double.PositiveInfinity)]
+    [InlineData(double.Epsilon, 745.1332191019411d)]
     [InlineData(0.5d, 1.4436354751788103d)]
-    [InlineData(1d, 0.88137358701954294d)]
+    [InlineData(1d, 0.881373587019543d)]
     [InlineData(2d, 0.48121182505960347d)]
     [InlineData(double.PositiveInfinity, 0d)]
     [InlineData(-0.5d, -1.4436354751788103d)]
-    [InlineData(-1d, -0.88137358701954294d)]
+    [InlineData(-1d, -0.881373587019543d)]
     [InlineData(-2d, -0.48121182505960347d)]
     [InlineData(double.NegativeInfinity, 0d)]
     public void MathTrig_Acsch_ExpectedValue(double x, double expectedValue)
@@ -456,7 +455,7 @@ public partial class MathTrigTests
     [Theory]
     [InlineData(double.NaN, double.NaN)]
     [InlineData(0d, double.NaN)]
-    [InlineData(double.Epsilon, double.PositiveInfinity)]
+    [InlineData(double.Epsilon, 745.1332191019411d)]
     [InlineData(0.5d, 1.3169578969248166d)]
     [InlineData(1d, 0d)]
     [InlineData(2d, double.NaN)]

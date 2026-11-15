@@ -5,6 +5,15 @@ using System.Numerics;
 
 namespace MathTrigonometric;
 
+/*
+ * Complex functions follow the IEEE 754 / ISO C99 Annex G conventions:
+ *  - inverse functions return principal values; points on a branch cut take the value from the side indicated
+ *    by the sign of the zero component (e.g. +0 imaginary part means the limit from the upper half-plane);
+ *  - infinite arguments return the limit value where one exists;
+ *  - a NaN argument returns NaN.
+ * All results are computed from real System.Math functions only, so they do not depend on the
+ * runtime's System.Numerics.Complex implementation (whose edge-case behavior differs across .NET versions).
+ */
 public static partial class MathTrig
 {
     #region Fundamental Trigonometric Functions
@@ -19,11 +28,7 @@ public static partial class MathTrig
     ///     NaN, NegativeInfinity, or PositiveInfinity.
     /// </returns>
     public static Complex Sin(Complex z)
-    {
-        var sin = Math.Sin(z.Real);
-        var cos = Math.Cos(z.Real);
-        return new Complex(sin * Math.Cosh(z.Imaginary), cos * Math.Sinh(z.Imaginary));
-    }
+        => new(MultiplyCosh(Math.Sin(z.Real), z.Imaginary), MultiplySinh(Math.Cos(z.Real), z.Imaginary));
 
     /// <summary>
     ///     Cosine of the specific complex number.
@@ -35,11 +40,7 @@ public static partial class MathTrig
     ///     NaN, NegativeInfinity, or PositiveInfinity.
     /// </returns>
     public static Complex Cos(Complex z)
-    {
-        var sin = Math.Sin(z.Real);
-        var cos = Math.Cos(z.Real);
-        return new Complex(cos * Math.Cosh(z.Imaginary), -sin * Math.Sinh(z.Imaginary));
-    }
+        => new(MultiplyCosh(Math.Cos(z.Real), z.Imaginary), MultiplySinh(-Math.Sin(z.Real), z.Imaginary));
 
     /// <summary>
     ///     Tangent of the specific complex number.
@@ -52,29 +53,41 @@ public static partial class MathTrig
     /// </returns>
     public static Complex Tan(Complex z)
     {
-        // tan z = sin z / cos z, but to avoid unnecessary repeated trig computations, use
-        //   tan z = (sin(2x) + i sinh(2y)) / (cos(2x) + cosh(2y))
-        // (see Abramowitz & Stegun 4.3.57 or derive by hand), and compute trig functions here.
+        double x = z.Real, y = z.Imaginary;
+        if (double.IsNaN(x) || double.IsNaN(y))
+            return ComplexNaN;
 
-        // This approach does not work for |y| > ~355, because sinh(2y) and cosh(2y) overflow,
-        // even though their ratio does not. In that case, divide through by cosh to get:
-        //   tan z = (sin(2x) / cosh(2y) + i \tanh(2y)) / (1 + cos(2x) / cosh(2y))
-        // which correctly computes the (tiny) real part and the (normal-sized) imaginary part.
+        // tan(x ± i∞) = ±i for any x
+        if (double.IsInfinity(y))
+            return new Complex(CopySign(0d, Math.Sin(2d * x)), CopySign(1d, y));
 
-        var x2 = 2.0 * z.Real;
-        var y2 = 2.0 * z.Imaginary;
-        var sin = Math.Sin(x2);
-        var cos = Math.Cos(x2);
-        var cosh = Math.Cosh(y2);
-        if (Math.Abs(z.Imaginary) <= 4.0)
+        if (double.IsInfinity(x))
+            return ComplexNaN;
+
+        if (y == 0d)
+            return new Complex(Math.Tan(x), y);
+
+        // tan(iy) = i tanh y
+        if (x == 0d)
+            return new Complex(x, Math.Tanh(y));
+
+        // tan z = (sin x cos x + i sinh y cosh y) / (cos² x + sinh² y)
+        // The denominator equals (cos 2x + cosh 2y) / 2 but is computed without cancellation near the poles.
+        // For large |y| sinh y and cosh y overflow even though the ratio does not, so divide through by cosh 2y:
+        //   tan z = (sin 2x / cosh 2y + i tanh 2y) / (1 + cos 2x / cosh 2y)
+        if (Math.Abs(y) <= 4d)
         {
-            var d = cos + cosh;
-            return new Complex(sin / d, Math.Sinh(y2) / d);
+            var sin = Math.Sin(x);
+            var cos = Math.Cos(x);
+            var sinh = Math.Sinh(y);
+            var d = cos * cos + sinh * sinh;
+            return new Complex(sin * cos / d, sinh * Math.Cosh(y) / d);
         }
         else
         {
-            var d = 1.0 + cos / cosh;
-            return new Complex(sin / cosh / d, Math.Tanh(y2) / d);
+            var cosh2 = Math.Cosh(2d * y);
+            var d = 1d + Math.Cos(2d * x) / cosh2;
+            return new Complex(Math.Sin(2d * x) / cosh2 / d, Math.Tanh(2d * y) / d);
         }
     }
 
@@ -89,12 +102,11 @@ public static partial class MathTrig
     /// </returns>
     public static Complex Csc(Complex z)
     {
-        var sin = Sin(z);
+        // |sin z| → ∞ as |Im z| → ∞, for any real part
+        if (double.IsInfinity(z.Imaginary) && !double.IsNaN(z.Real))
+            return new Complex(0d, -CopySign(0d, z.Imaginary));
 
-        if (IsInfinity(sin))
-            return Complex.Zero;
-
-        return Complex.One / sin;
+        return Reciprocal(Sin(z));
     }
 
     /// <summary>
@@ -108,12 +120,11 @@ public static partial class MathTrig
     /// </returns>
     public static Complex Sec(Complex z)
     {
-        var cos = Cos(z);
-
-        if (IsInfinity(cos))
+        // |cos z| → ∞ as |Im z| → ∞, for any real part
+        if (double.IsInfinity(z.Imaginary) && !double.IsNaN(z.Real))
             return Complex.Zero;
 
-        return Complex.One / cos;
+        return Reciprocal(Cos(z));
     }
 
     /// <summary>
@@ -127,20 +138,47 @@ public static partial class MathTrig
     /// </returns>
     public static Complex Cot(Complex z)
     {
-        if (double.IsInfinity(z.Real) || double.IsNaN(z.Real))
-            return new Complex(double.NaN, double.NaN);
+        double x = z.Real, y = z.Imaginary;
+        if (double.IsNaN(x) || double.IsNaN(y))
+            return ComplexNaN;
 
-        if (double.IsNegativeInfinity(z.Imaginary))
-            return Complex.ImaginaryOne;
+        // cot(x ± i∞) = ∓i for any x
+        if (double.IsInfinity(y))
+            return new Complex(CopySign(0d, Math.Sin(2d * x)), -CopySign(1d, y));
 
-        if (double.IsPositiveInfinity(z.Imaginary))
-            return new Complex(0d, -1d);
+        if (double.IsInfinity(x) || (x == 0d && y == 0d))
+            return ComplexNaN;
 
-        var sin = Math.Sin(z.Real);
-        var cos = Math.Cos(z.Real);
-        var coshI = Math.Cosh(z.Imaginary);
-        var sinhI = Math.Sinh(z.Imaginary);
-        return new Complex(cos * coshI, -sin * sinhI) / new Complex(sin * coshI, cos * sinhI);
+        if (y == 0d)
+            return new Complex(1d / Math.Tan(x), -y);
+
+        // cot(iy) = −i coth y
+        if (x == 0d)
+            return new Complex(x, -1d / Math.Tanh(y));
+
+        // cot z = (sin x cos x − i sinh y cosh y) / (sin² x + sinh² y)
+        // The denominator equals (cosh 2y − cos 2x) / 2 but is computed without cancellation near the poles.
+        // For large |y|: cot z = (sin 2x / cosh 2y − i tanh 2y) / (1 − cos 2x / cosh 2y)
+        if (Math.Abs(y) <= 4d)
+        {
+            var sin = Math.Sin(x);
+            var cos = Math.Cos(x);
+            var sinh = Math.Sinh(y);
+
+            // scale tiny sin and sinh so that their squares do not underflow
+            var m = Math.Max(Math.Abs(sin), Math.Abs(sinh));
+            var s = m < 1e-150 ? 1d / m : 1d;
+            sin *= s;
+            sinh *= s;
+            var d = sin * sin + sinh * sinh;
+            return new Complex(sin * cos / d * s, -sinh * Math.Cosh(y) / d * s);
+        }
+        else
+        {
+            var cosh2 = Math.Cosh(2d * y);
+            var d = 1d - Math.Cos(2d * x) / cosh2;
+            return new Complex(Math.Sin(2d * x) / cosh2 / d, -Math.Tanh(2d * y) / d);
+        }
     }
 
     #endregion
@@ -152,43 +190,64 @@ public static partial class MathTrig
     /// </summary>
     /// <param name="z">A complex number.</param>
     /// <returns>
-    ///     The arc sine of the value.
+    ///     The principal value of the arc sine.
     ///     This method returns NaN if <paramref name="z" /> equals NaN.
     /// </returns>
     public static Complex Asin(Complex z)
-        => Complex.Asin(z);
+    {
+        // asin z = −i asinh(iz)
+        var w = Asinh(new Complex(-z.Imaginary, z.Real));
+        return new Complex(w.Imaginary, -w.Real);
+    }
 
     /// <summary>
     ///     Arc cosine of the specific complex number.
     /// </summary>
     /// <param name="z">A complex number.</param>
     /// <returns>
-    ///     The arc cosine of the value.
+    ///     The principal value of the arc cosine.
     ///     This method returns NaN if <paramref name="z" /> equals NaN.
     /// </returns>
     public static Complex Acos(Complex z)
-        => Complex.Acos(z);
+    {
+        double x = z.Real, y = z.Imaginary;
+        if (double.IsNaN(x) || double.IsNaN(y))
+            return ComplexNaN;
+
+        if (double.IsInfinity(x) || double.IsInfinity(y))
+        {
+            double re;
+            if (double.IsInfinity(y))
+                re = double.IsInfinity(x) ? (x > 0 ? Math.PI / 4 : 3 * Math.PI / 4) : Math.PI / 2;
+            else
+                re = x > 0 ? 0d : Math.PI;
+
+            return new Complex(re, -CopySign(double.PositiveInfinity, y));
+        }
+
+        // acos z = ∓i acosh z ≈ ∓i log(2z) for large |z|
+        if (IsLarge(x, y))
+            return new Complex(Math.Abs(Math.Atan2(y, x)), -CopySign(Ln2 + LogAbs(x, y), y));
+
+        // Kahan: acos z = 2 atan2(Re √(1−z), Re √(1+z)) + i asinh(Im(conj(√(1+z)) √(1−z)))
+        Sqrt(1d - x, -y, out var s1Re, out var s1Im);
+        Sqrt(1d + x, y, out var s2Re, out var s2Im);
+        return new Complex(2d * Math.Atan2(s1Re, s2Re), RealAsinh(s2Re * s1Im - s2Im * s1Re));
+    }
 
     /// <summary>
     ///     Arc tangent of the specific complex number.
     /// </summary>
     /// <param name="z">A complex number.</param>
     /// <returns>
-    ///     The arc tangent of the value.
+    ///     The principal value of the arc tangent.
     ///     This method returns NaN if <paramref name="z" /> equals NaN.
     /// </returns>
     public static Complex Atan(Complex z)
     {
-        //TODO: create an issue for dotnet/runtime to fix Complex.Atan method
-        if ((double.IsInfinity(z.Real) && !double.IsInfinity(z.Imaginary)) ||
-            (double.IsInfinity(z.Imaginary) && !double.IsInfinity(z.Real)))
-        {
-            return IsNegative(z.Real) || IsNegative(z.Imaginary)
-                ? new Complex(-Math.PI / 2, 0)
-                : new Complex(Math.PI / 2, 0);
-        }
-
-        return Complex.Atan(z);
+        // atan z = −i atanh(iz)
+        var w = Atanh(new Complex(-z.Imaginary, z.Real));
+        return new Complex(w.Imaginary, -w.Real);
     }
 
     /// <summary>
@@ -196,45 +255,40 @@ public static partial class MathTrig
     /// </summary>
     /// <param name="z">A complex number.</param>
     /// <returns>
-    ///     The arc cosecant of the value.
+    ///     The principal value of the arc cosecant, asin(1/z).
     ///     This method returns NaN if <paramref name="z" /> equals Zero or NaN.
     /// </returns>
     public static Complex Acsc(Complex z)
-        => Complex.Asin(Complex.One / z);
+        => Asin(Reciprocal(z));
 
     /// <summary>
     ///     Arc secant of the specific complex number.
     /// </summary>
     /// <param name="z">A complex number.</param>
     /// <returns>
-    ///     The arc secant of the value.
+    ///     The principal value of the arc secant, acos(1/z).
     ///     This method returns NaN if <paramref name="z" /> equals Zero or NaN.
     /// </returns>
     public static Complex Asec(Complex z)
-        => Complex.Acos(Complex.One / z);
+        => Acos(Reciprocal(z));
 
     /// <summary>
     ///     Arc cotangent of the specific complex number.
     /// </summary>
     /// <param name="z">A complex number.</param>
     /// <returns>
-    ///     The arc cotangent of the value.
+    ///     The arc cotangent of the value, π/2 − atan(z), whose real part lies in [0, π].
     ///     This method returns NaN if <paramref name="z" /> equals NaN.
     /// </returns>
     public static Complex Acot(Complex z)
     {
-        if (z == Complex.Zero)
-            return new Complex(Math.PI / 2, 0d);
+        if (z.Real == 0d && z.Imaginary == 0d)
+            return new Complex(Math.PI / 2, -z.Imaginary);
 
-        var oneOverZ = Complex.One / z;
-        if (IsInfinity(oneOverZ))
-            return new Complex(Math.PI / 2, 0d);
-
-        //the Trigonometric Symmetry is applied: arccot(−z) = π − arccot(z)
-        if (IsNegative(z.Real))
-            return Math.PI - Complex.Atan(-oneOverZ);
-
-        return Complex.Atan(oneOverZ);
+        // π/2 − atan z equals atan(1/z) when Re z ≥ +0 and π + atan(1/z) when Re z ≤ −0;
+        // the reciprocal form avoids cancellation for large |z|.
+        var w = Atan(Reciprocal(z));
+        return IsNegative(z.Real) ? new Complex(Math.PI + w.Real, w.Imaginary) : w;
     }
 
     #endregion
@@ -251,11 +305,10 @@ public static partial class MathTrig
     /// </returns>
     public static Complex Sinh(Complex z)
     {
-        //TODO: create an issue for dotnet/runtime to fix Complex.Sinh method
         if (double.IsInfinity(z.Real) && z.Imaginary == 0d)
             return z;
 
-        // Use sinh(z) = -i sin(iz) to compute via sin(z). 
+        // Use sinh(z) = -i sin(iz) to compute via sin(z).
         var sin = Sin(new Complex(-z.Imaginary, z.Real));
         return new Complex(sin.Imaginary, -sin.Real);
     }
@@ -270,9 +323,8 @@ public static partial class MathTrig
     /// </returns>
     public static Complex Cosh(Complex z)
     {
-        //TODO: create an issue for dotnet/runtime to fix Complex.Cosh method
         if (double.IsInfinity(z.Real) && z.Imaginary == 0d)
-            return new Complex(double.PositiveInfinity, 0);
+            return new Complex(double.PositiveInfinity, MultiplyExact(z.Imaginary, z.Real));
 
         // Use cosh(z) = cos(iz) to compute via cos(z).
         return Cos(new Complex(-z.Imaginary, z.Real));
@@ -303,11 +355,9 @@ public static partial class MathTrig
     /// </returns>
     public static Complex Csch(Complex z)
     {
-        var sin = Sinh(z);
-        if (double.IsInfinity(sin.Real) && double.IsInfinity(sin.Imaginary))
-            return Complex.Zero;
-
-        return Complex.One / sin;
+        // csch z = i csc(iz)
+        var csc = Csc(new Complex(-z.Imaginary, z.Real));
+        return new Complex(-csc.Imaginary, csc.Real);
     }
 
     /// <summary>
@@ -319,13 +369,7 @@ public static partial class MathTrig
     ///     This method returns NaN if <paramref name="z" /> equals NaN.
     /// </returns>
     public static Complex Sech(Complex z)
-    {
-        var cos = Cosh(z);
-        if (double.IsInfinity(cos.Real) && double.IsInfinity(cos.Imaginary))
-            return Complex.Zero;
-
-        return Complex.One / cos;
-    }
+        => Sec(new Complex(-z.Imaginary, z.Real)); // sech z = sec(iz)
 
     /// <summary>
     ///     Hyperbolic cotangent of the specific complex number.
@@ -337,8 +381,9 @@ public static partial class MathTrig
     /// </returns>
     public static Complex Coth(Complex z)
     {
-        var tanh = Tanh(z);
-        return Complex.One / tanh;
+        // coth z = i cot(iz)
+        var cot = Cot(new Complex(-z.Imaginary, z.Real));
+        return new Complex(-cot.Imaginary, cot.Real);
     }
 
     #endregion
@@ -350,22 +395,38 @@ public static partial class MathTrig
     /// </summary>
     /// <param name="z">A complex number.</param>
     /// <returns>
-    ///     The arc-hyperbolic sine of the value.
+    ///     The principal value of the arc-hyperbolic sine.
     ///     This method returns NaN if <paramref name="z" /> equals NaN.
     /// </returns>
     public static Complex Asinh(Complex z)
     {
-        if (double.IsPositiveInfinity(z.Real) && !double.IsInfinity(z.Imaginary))
-            return new Complex(double.PositiveInfinity, 0d);
+        double x = z.Real, y = z.Imaginary;
+        if (double.IsNaN(x) || double.IsNaN(y))
+            return ComplexNaN;
 
-        if (double.IsNegativeInfinity(z.Real) && !double.IsInfinity(z.Imaginary))
-            return new Complex(double.NegativeInfinity, 0d);
+        if (double.IsInfinity(x) || double.IsInfinity(y))
+        {
+            if (!double.IsInfinity(x))
+                return new Complex(CopySign(double.PositiveInfinity, x), CopySign(Math.PI / 2, y));
 
-        //the Trigonometric Symmetry is applied: arsinh(−z)=−arsinh(z)
-        if (IsNegative(z.Real))
-            return -Complex.Log(-z + Complex.Sqrt(z * z + Complex.One));
+            return new Complex(x, double.IsInfinity(y) ? CopySign(Math.PI / 4, y) : CopySign(0d, y));
+        }
 
-        return Complex.Log(z + Complex.Sqrt(z * z + Complex.One));
+        // asinh z ≈ log(2z) for large |z| with Re z ≥ +0, and asinh z = −asinh(−z) otherwise
+        if (IsLarge(x, y))
+        {
+            return IsNegative(x)
+                ? new Complex(-(Ln2 + LogAbs(x, y)), -Math.Atan2(-y, -x))
+                : new Complex(Ln2 + LogAbs(x, y), Math.Atan2(y, x));
+        }
+
+        // Kahan: asin w = atan2(Re w, Re(√(1−w) √(1+w))) + i asinh(Im(conj(√(1−w)) √(1+w))), with asinh z = −i asin(iz)
+        // Here w = iz = −y + ix, so 1 − w = (1 + y) − ix and 1 + w = (1 − y) + ix.
+        Sqrt(1d + y, -x, out var s1Re, out var s1Im);
+        Sqrt(1d - y, x, out var s2Re, out var s2Im);
+        var asinRe = Math.Atan2(-y, s1Re * s2Re - s1Im * s2Im);
+        var asinIm = RealAsinh(s1Re * s2Im - s1Im * s2Re);
+        return new Complex(asinIm, -asinRe);
     }
 
     /// <summary>
@@ -373,18 +434,34 @@ public static partial class MathTrig
     /// </summary>
     /// <param name="z">A complex number.</param>
     /// <returns>
-    ///     The arc-hyperbolic cosine of the value.
+    ///     The principal value of the arc-hyperbolic cosine, whose real part is non-negative.
     ///     This method returns NaN if <paramref name="z" /> equals NaN.
     /// </returns>
     public static Complex Acosh(Complex z)
     {
-        if (IsPositiveInfinity(z))
-            return new Complex(double.PositiveInfinity, 0d);
+        double x = z.Real, y = z.Imaginary;
+        if (double.IsNaN(x) || double.IsNaN(y))
+            return ComplexNaN;
 
-        if (IsNegativeInfinity(z))
-            return new Complex(double.PositiveInfinity, double.NaN);
+        if (double.IsInfinity(x) || double.IsInfinity(y))
+        {
+            double im;
+            if (double.IsInfinity(y))
+                im = double.IsInfinity(x) ? (x > 0 ? Math.PI / 4 : 3 * Math.PI / 4) : Math.PI / 2;
+            else
+                im = x > 0 ? 0d : Math.PI;
 
-        return Complex.Log(z + Complex.Sqrt(z * z - Complex.One));
+            return new Complex(double.PositiveInfinity, CopySign(im, y));
+        }
+
+        // acosh z ≈ log(2z) for large |z|
+        if (IsLarge(x, y))
+            return new Complex(Ln2 + LogAbs(x, y), Math.Atan2(y, x));
+
+        // Kahan: acosh z = asinh(Re(conj(√(z−1)) √(z+1))) + i 2 atan2(Im √(z−1), Re √(z+1))
+        Sqrt(x - 1d, y, out var s1Re, out var s1Im);
+        Sqrt(x + 1d, y, out var s2Re, out var s2Im);
+        return new Complex(RealAsinh(s1Re * s2Re + s1Im * s2Im), 2d * Math.Atan2(s1Im, s2Re));
     }
 
     /// <summary>
@@ -392,30 +469,40 @@ public static partial class MathTrig
     /// </summary>
     /// <param name="z">A complex number.</param>
     /// <returns>
-    ///     The arc-hyperbolic tangent of the value.
+    ///     The principal value of the arc-hyperbolic tangent.
     ///     This method returns NaN if <paramref name="z" /> equals NaN.
     /// </returns>
     public static Complex Atanh(Complex z)
     {
-        if (z == Complex.One)
-            return new Complex(double.PositiveInfinity, 0d);
+        double x = z.Real, y = z.Imaginary;
+        if (double.IsNaN(x) || double.IsNaN(y))
+            return ComplexNaN;
 
-        if (z == -Complex.One)
-            return new Complex(double.NegativeInfinity, 0d);
+        if (double.IsInfinity(x) || double.IsInfinity(y))
+            return new Complex(CopySign(0d, x), CopySign(Math.PI / 2, y));
 
-        if ((double.IsPositiveInfinity(z.Real) && !double.IsInfinity(z.Imaginary)) ||
-            (!double.IsInfinity(z.Real) && double.IsNegativeInfinity(z.Imaginary)))
-            return new Complex(0d, -Math.PI / 2);
+        // atanh is odd; evaluating on Re z ≥ 0 keeps 4x / ((1 − x)² + y²) non-negative, so log1p does not amplify its rounding error
+        if (IsNegative(x))
+        {
+            var w = Atanh(new Complex(-x, -y));
+            return new Complex(-w.Real, -w.Imaginary);
+        }
 
-        if ((double.IsNegativeInfinity(z.Real) && !double.IsInfinity(z.Imaginary)) ||
-            (!double.IsInfinity(z.Real) && double.IsPositiveInfinity(z.Imaginary)))
-            return new Complex(0d, Math.PI / 2);
+        var ax = x;
+        var ay = Math.Abs(y);
 
-        //the Trigonometric Symmetry is applied: artanh(−x)=−artanh(x)
-        if (IsNegative(z.Real))
-            return -Complex.Log((1.0 - z) / (1.0 + z)) / 2.0;
+        // for large |z|: atanh z ≈ 1/z ± iπ/2
+        if (IsLarge(x, y))
+            return new Complex(Reciprocal(z).Real, CopySign(Math.PI / 2, y));
 
-        return Complex.Log((1.0 + z) / (1.0 - z)) / 2.0;
+        // Re atanh z = ¼ log1p(4x / ((1 − x)² + y²)),  Im atanh z = ½ atan2(2y, (1 − x)(1 + x) − y²)
+        double re;
+        if (ax == 1d && y != 0d)
+            re = CopySign(Math.Log(Hypot(2d, y) / ay) / 2d, x); // (1 − x)² + y² would underflow for tiny y
+        else
+            re = Log1p(4d * x / ((1d - x) * (1d - x) + y * y)) / 4d;
+
+        return new Complex(re, Math.Atan2(2d * y, (1d - x) * (1d + x) - y * y) / 2d);
     }
 
     /// <summary>
@@ -423,80 +510,208 @@ public static partial class MathTrig
     /// </summary>
     /// <param name="z">A complex number.</param>
     /// <returns>
-    ///     The arc-hyperbolic cosecant of the value.
+    ///     The principal value of the arc-hyperbolic cosecant, asinh(1/z).
     ///     This method returns NaN if <paramref name="z" /> equals Zero or NaN.
     /// </returns>
     public static Complex Acsch(Complex z)
-    {
-        if (z == Complex.Zero)
-            return new Complex(double.NaN, double.NaN);
-
-        if (IsInfinity(z))
-            return Complex.Zero;
-
-        var zz = z * z;
-        if (zz == Complex.Zero)
-            return new Complex(IsNegative(z.Real) ? double.NegativeInfinity : double.PositiveInfinity, 0d);
-
-        //the Trigonometric Symmetry is applied: arcsch(−z)=−arcsch(z)
-        if (IsNegative(z.Real))
-            return -Complex.Log(1.0 / -z + Complex.Sqrt(1.0 / zz + 1.0));
-
-        return Complex.Log(1.0 / z + Complex.Sqrt(1.0 / zz + 1.0));
-    }
+        => Asinh(Reciprocal(z));
 
     /// <summary>
     ///     Arc-hyperbolic secant of the specific complex number.
     /// </summary>
     /// <param name="z">A complex number.</param>
     /// <returns>
-    ///     The arc-hyperbolic secant of the value.
+    ///     The principal value of the arc-hyperbolic secant, acosh(1/z).
     ///     This method returns NaN if <paramref name="z" /> equals Zero or NaN.
     /// </returns>
     public static Complex Asech(Complex z)
-    {
-        if (z == Complex.Zero)
-            return new Complex(double.NaN, double.NaN);
-
-        if ((double.IsInfinity(z.Real) && !double.IsInfinity(z.Imaginary)) ||
-            (!double.IsInfinity(z.Real) && double.IsNegativeInfinity(z.Imaginary)))
-            return new Complex(0d, Math.PI / 2);
-
-        if (!double.IsInfinity(z.Real) && double.IsPositiveInfinity(z.Imaginary))
-            return new Complex(0d, -Math.PI / 2);
-
-        var zz = z * z;
-        if (zz == Complex.Zero)
-            return new Complex(double.PositiveInfinity, IsNegative(z.Real) ? Math.PI : 0d);
-
-        return Complex.Log(1.0 / z + Complex.Sqrt(1.0 / zz - 1.0));
-    }
+        => Acosh(Reciprocal(z));
 
     /// <summary>
     ///     Arc-hyperbolic cotangent of the specific complex number.
     /// </summary>
     /// <param name="z">A complex number.</param>
     /// <returns>
-    ///     The arc-hyperbolic cotangent of the value.
+    ///     The principal value of the arc-hyperbolic cotangent, atanh(1/z).
     ///     This method returns NaN if <paramref name="z" /> equals NaN.
     /// </returns>
     public static Complex Acoth(Complex z)
     {
-        if (z == Complex.One)
-            return new Complex(double.PositiveInfinity, 0d);
+        double x = z.Real, y = z.Imaginary;
+        if (double.IsNaN(x) || double.IsNaN(y))
+            return ComplexNaN;
 
-        if (z == -Complex.One)
-            return new Complex(double.NegativeInfinity, 0d);
+        if (double.IsInfinity(x) || double.IsInfinity(y))
+            return new Complex(CopySign(0d, x), -CopySign(0d, y));
 
-        if ((double.IsInfinity(z.Real) && !double.IsInfinity(z.Imaginary)) ||
-            (!double.IsInfinity(z.Real) && double.IsInfinity(z.Imaginary)))
-            return Complex.Zero;
+        // acoth is odd; evaluating on Re z ≥ 0 keeps 4x / ((x − 1)² + y²) non-negative
+        if (IsNegative(x))
+        {
+            var w = Acoth(new Complex(-x, -y));
+            return new Complex(-w.Real, -w.Imaginary);
+        }
 
-        //the Trigonometric Symmetry is applied: arcoth(−x)=−arcoth(x)
-        if (IsNegative(z.Real))
-            return -Complex.Log((z - 1.0) / (z + 1.0)) / 2.0;
+        // for large |z|: acoth z ≈ 1/z
+        if (IsLarge(x, y))
+            return Reciprocal(z);
 
-        return Complex.Log((z + 1.0) / (z - 1.0)) / 2.0;
+        // acoth z = ½ log((z + 1) / (z − 1)), evaluated without forming 1/z:
+        // Re = ¼ log1p(4x / ((x − 1)² + y²)),  Im = ½ atan2(−2y, (x − 1)(x + 1) + y²)
+        double re;
+        if (x == 1d && y != 0d)
+            re = Math.Log(Hypot(2d, y) / Math.Abs(y)) / 2d; // (x − 1)² + y² would underflow for tiny y
+        else
+            re = Log1p(4d * x / ((x - 1d) * (x - 1d) + y * y)) / 4d;
+
+        return new Complex(re, Math.Atan2(-2d * y, (x - 1d) * (x + 1d) + y * y) / 2d);
+    }
+
+    #endregion
+
+    #region Complex helpers
+
+    private static readonly Complex ComplexNaN = new(double.NaN, double.NaN);
+
+    private const double Ln2 = 0.69314718055994531;
+
+    /// <summary>1/z with signed zeros preserved; 1/0 is NaN, 1/∞ is a signed zero.</summary>
+    private static Complex Reciprocal(Complex z)
+    {
+        double x = z.Real, y = z.Imaginary;
+        if (double.IsNaN(x) || double.IsNaN(y) || (x == 0d && y == 0d))
+            return ComplexNaN;
+
+        if (double.IsInfinity(x) || double.IsInfinity(y))
+            return new Complex(CopySign(0d, x), -CopySign(0d, y));
+
+        // Smith's algorithm
+        if (Math.Abs(x) >= Math.Abs(y))
+        {
+            var r = y / x;
+            var d = x + y * r;
+            return new Complex(1d / d, -r / d);
+        }
+        else
+        {
+            var r = x / y;
+            var d = y + x * r;
+            return new Complex(r / d, -1d / d);
+        }
+    }
+
+    /// <summary>Principal square root of x + iy, honoring the sign of a zero imaginary part.</summary>
+    private static void Sqrt(double x, double y, out double re, out double im)
+    {
+        if (x == 0d && y == 0d)
+        {
+            re = 0d;
+            im = y;
+            return;
+        }
+
+        // halves are taken before adding to avoid overflow
+        var t = Math.Sqrt(Math.Abs(x) / 2d + Hypot(x, y) / 2d);
+        if (x >= 0d)
+        {
+            re = t;
+            im = y / (2d * t);
+        }
+        else
+        {
+            re = Math.Abs(y) / (2d * t);
+            im = CopySign(t, y);
+        }
+    }
+
+    /// <summary>a·cosh y without intermediate overflow when cosh y alone exceeds double.MaxValue.</summary>
+    private static double MultiplyCosh(double a, double y)
+    {
+        var cosh = Math.Cosh(y);
+        if (!double.IsInfinity(cosh) || double.IsInfinity(y) || a == 0d)
+            return MultiplyExact(a, cosh);
+
+        // cosh y = e^|y| / 2 for |y| > 710; split e^|y| = h·h to keep the product finite when it fits
+        var h = Math.Exp(Math.Abs(y) / 2d);
+        return a * (0.5 * h) * h;
+    }
+
+    /// <summary>a·sinh y without intermediate overflow when sinh y alone exceeds double.MaxValue.</summary>
+    private static double MultiplySinh(double a, double y)
+    {
+        var sinh = Math.Sinh(y);
+        if (!double.IsInfinity(sinh) || double.IsInfinity(y) || a == 0d)
+            return MultiplyExact(a, sinh);
+
+        var h = Math.Exp(Math.Abs(y) / 2d);
+        return CopySign(1d, y) * a * (0.5 * h) * h;
+    }
+
+    /// <summary>log|x + iy| without overflow or underflow of the modulus.</summary>
+    private static double LogAbs(double x, double y)
+    {
+        x = Math.Abs(x);
+        y = Math.Abs(y);
+        if (x < y)
+            (x, y) = (y, x);
+
+        var r = y / x;
+        return Math.Log(x) + Log1p(r * r) / 2d;
+    }
+
+    /// <summary>Threshold above which inverse functions use their asymptotic form log(2z) (relative error below 1e-300).</summary>
+    private const double AsymptoticThreshold = 1e150;
+
+    private static bool IsLarge(double x, double y)
+        => Math.Abs(x) > AsymptoticThreshold || Math.Abs(y) > AsymptoticThreshold;
+
+    /// <summary>a·b, but an exact zero factor stays a (signed) zero even when b is infinite.</summary>
+    private static double MultiplyExact(double a, double b)
+        => a == 0d && !double.IsNaN(b) ? (IsNegative(b) ? -a : a) : a * b;
+
+    private static double CopySign(double magnitude, double sign)
+        => IsNegative(sign) ? -Math.Abs(magnitude) : Math.Abs(magnitude);
+
+    private static double Hypot(double x, double y)
+    {
+        x = Math.Abs(x);
+        y = Math.Abs(y);
+        if (double.IsInfinity(x) || double.IsInfinity(y))
+            return double.PositiveInfinity;
+
+        if (x < y)
+            (x, y) = (y, x);
+
+        if (x == 0d)
+            return 0d;
+
+        var r = y / x;
+        return x * Math.Sqrt(1d + r * r);
+    }
+
+    /// <summary>log(1 + x), accurate for small x.</summary>
+    private static double Log1p(double x)
+    {
+        if (double.IsPositiveInfinity(x))
+            return x;
+
+        var u = 1d + x;
+        if (u == 1d)
+            return x;
+
+        return Math.Log(u) * x / (u - 1d);
+    }
+
+    /// <summary>asinh x, accurate for small and large |x|.</summary>
+    private static double RealAsinh(double x)
+    {
+        var a = Math.Abs(x);
+        double r;
+        if (a > 1e8)
+            r = Math.Log(a) + Ln2;
+        else
+            r = Log1p(a + a * a / (1d + Math.Sqrt(1d + a * a)));
+
+        return CopySign(r, x);
     }
 
     #endregion
