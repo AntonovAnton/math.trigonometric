@@ -13,49 +13,88 @@ permissions:
 
 jobs:
   # ────────────────────────────────────────────────────────────────────────────
-  # 1. Read version from csproj file
+  # 1. Read version from csproj file and check whether it is already on NuGet
   # ────────────────────────────────────────────────────────────────────────────
   read-version:
-    name: Read & Validate Versions
+    name: Read Version & Check NuGet
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.read.outputs.version }}
+      published: ${{ steps.check.outputs.published }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Read and validate versions
+      - name: Read version
         id: read
         run: |
           VERSION=$(grep -oP '(?<=<Version>)[^<]+' MathTrigonometric/MathTrigonometric.csproj | tr -d '[:space:]')
+          if [ -z "$VERSION" ]; then
+            echo "::error::<Version> not found in MathTrigonometric/MathTrigonometric.csproj"
+            exit 1
+          fi
 
-          echo "MathTrigonometric version:                       $VERSION"
-
+          echo "MathTrigonometric version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-  # ────────────────────────────────────────────────────────────────────────────
-  # 2. Run tests — publishing is blocked if any test fails
-  # ────────────────────────────────────────────────────────────────────────────
-  # run-tests:
-  #   name: Run Tests
-  #   needs: read-version
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
+      - name: Check if MathTrigonometric ${{ steps.read.outputs.version }} is already published
+        id: check
+        env:
+          VERSION: ${{ steps.read.outputs.version }}
+        run: |
+          # NuGet package ids and versions are lower-case in the flat container API
+          ID=mathtrigonometric
+          VER=$(echo "$VERSION" | tr '[:upper:]' '[:lower:]')
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://api.nuget.org/v3-flatcontainer/${ID}/${VER}/${ID}.${VER}.nupkg")
 
-  #     - name: Setup .NET
-  #       uses: actions/setup-dotnet@v4
-  #       with:
-  #         dotnet-version: '11.x'
+          case "$HTTP_STATUS" in
+            200)
+              echo "::notice::MathTrigonometric $VERSION is already published — publishing will be skipped."
+              echo "published=true" >> $GITHUB_OUTPUT ;;
+            404)
+              echo "MathTrigonometric $VERSION is not yet published."
+              echo "published=false" >> $GITHUB_OUTPUT ;;
+            *)
+              echo "::error::Unexpected HTTP status $HTTP_STATUS from NuGet; cannot tell whether $VERSION is published."
+              exit 1 ;;
+          esac
 
-  #     - name: Run tests
-  #       run: dotnet test --configuration Release --verbosity normal
+  # ────────────────────────────────────────────────────────────────────────────
+  # 2. Run tests on every push — publishing is blocked if any test fails
+  #    The test project targets net8.0, net9.0, net10.0 and net11.0, so all four runtimes are installed.
+  # ────────────────────────────────────────────────────────────────────────────
+  run-tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.x
+            9.x
+            10.x
+            11.x
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test --configuration Release --no-build
 
   # ────────────────────────────────────────────────────────────────────────────
   # 3. Build, pack and publish MathTrigonometric
+  #    Skipped entirely when this version is already on NuGet.
   # ────────────────────────────────────────────────────────────────────────────
   publish-mathtrigonometric:
     name: Publish MathTrigonometric
-    needs: [read-version] #, run-tests]
+    needs: [read-version, run-tests]
+    if: needs.read-version.outputs.published == 'false'
     runs-on: ubuntu-latest
     environment: production
     outputs:
@@ -68,38 +107,19 @@ jobs:
         with:
           dotnet-version: '11.x'
 
-      - name: Check if MathTrigonometric ${{ needs.read-version.outputs.version }} is already published
-        id: check
-        env:
-          VERSION: ${{ needs.read-version.outputs.version }}
-        run: |
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            "https://api.nuget.org/v3-flatcontainer/mathtrigonometric/${VERSION}/mathtrigonometric.${VERSION}.nupkg")
-          if [ "$HTTP_STATUS" = "200" ]; then
-            echo "MathTrigonometric $VERSION is already published — skipping."
-            echo "skip=true" >> $GITHUB_OUTPUT
-          else
-            echo "MathTrigonometric $VERSION is not yet published."
-            echo "skip=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Build MathTrigonometric
-        if: steps.check.outputs.skip == 'false'
         run: dotnet build MathTrigonometric/MathTrigonometric.csproj -c Release
 
       - name: Pack MathTrigonometric
-        if: steps.check.outputs.skip == 'false'
         run: dotnet pack MathTrigonometric/MathTrigonometric.csproj -c Release -o ./nupkgs --no-build
 
       - name: NuGet login (OIDC)
-        if: steps.check.outputs.skip == 'false'
         uses: NuGet/login@v1
         id: nuget-login
         with:
           user: ${{ secrets.NUGET_USER }}
 
       - name: Publish MathTrigonometric to NuGet (Trusted Publishing)
-        if: steps.check.outputs.skip == 'false'
         id: publish
         env:
           VERSION: ${{ needs.read-version.outputs.version }}

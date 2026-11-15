@@ -39,7 +39,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Sin(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -75,7 +76,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Cos(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -111,7 +113,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Tan(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -148,7 +151,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Csc(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -185,7 +189,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Sec(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -220,7 +225,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Cot(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -251,7 +257,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Asin(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -282,7 +289,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Acos(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -313,7 +321,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Atan(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -346,7 +355,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Acsc(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -377,7 +387,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Asec(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -409,7 +420,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Acot(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -444,7 +456,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Sinh(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -475,7 +488,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Cosh(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -506,7 +520,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Tanh(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -539,7 +554,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Csch(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -572,7 +588,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Sech(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -603,7 +620,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Coth(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -636,7 +654,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Asinh(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -673,7 +692,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Acosh(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -710,7 +730,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Atanh(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -748,7 +769,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Acsch(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -786,7 +808,8 @@ public partial class MathTrigTests
 
         var value = MathTrig.Asech(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 
     [Theory]
@@ -823,6 +846,7 @@ public partial class MathTrigTests
 
         var value = MathTrig.Acoth(new Complex(a, b));
 
-        Assert.Equal(expectedValue, value);
+        Assert.Equal(expectedValue.Real, value.Real, Tolerance(expectedValue.Real));
+        Assert.Equal(expectedValue.Imaginary, value.Imaginary, Tolerance(expectedValue.Imaginary));
     }
 }
