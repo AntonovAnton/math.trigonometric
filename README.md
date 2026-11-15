@@ -29,6 +29,15 @@ In version [1.1.0](https://github.com/AntonovAnton/math.trigonometric/releases/t
 
 In version [1.3.0](https://github.com/AntonovAnton/math.trigonometric/releases/tag/1.3.0), support for `float` and `Half` numbers has been introduced through overloaded. 
 
+In version [2.0.0](https://github.com/AntonovAnton/math.trigonometric/releases/tag/2.0.0), on .NET 11 and higher, support for the generic `Complex<T>` has been introduced through generic overloads of all the functions listed below. They work with any `T` that `Complex<T>` accepts, including the IEEE 754 decimal types `Decimal32`, `Decimal64` and `Decimal128`, as well as `float`, `Half`, `BFloat16` and `double`.
+
+Version 2.0.0 is a breaking release: it also corrects the complex functions and makes their results identical on every .NET version. Some results change, in particular on branch cuts:
+- Inverse functions return principal values. For example, `Acosh` and `Asech` previously returned the negated value in the left half-plane, such as `Acosh(-2) = -1.317 + πi` instead of `1.317 + πi`.
+- On a branch cut, the sign of a zero component selects the side, following IEEE 754 and ISO C99 Annex G. For example, `Acos(new Complex(2, 0)) = 0 − 1.317i` and `Acos(new Complex(2, -0.0)) = 0 + 1.317i`.
+- Infinite arguments return the limit value where one exists, for example `Atan(2 − ∞i) = π/2` and `Tan(x + ∞i) = i`.
+- Results no longer depend on the runtime's `System.Numerics.Complex`, whose edge-case behavior changed in .NET 11.
+- Accuracy is within a few ulps, including for tiny and huge arguments and near poles. The real `Asinh`, `Acosh`, `Atanh`, `Acsch`, `Asech`, `Acoth`, `Acsc`, `Asec`, `Csch` and `Sech` no longer overflow or lose precision for extreme arguments.
+
 ### Basic Trigonometric Functions
 1. **Sin**
 
@@ -338,6 +347,25 @@ Here are some examples of how to use the trigonometric functions in this library
             Console.WriteLine($"Acoth(2) = {acoth}");
             Console.WriteLine($"Asech({value}) = {asech}");
             Console.WriteLine($"Acsch(2) = {acsch}");
+        }
+    }
+### Generic Complex Numbers (.NET 11+)
+    using System.Numerics;
+    using MathTrigonometric;
+
+    class Program
+    {
+        static void Main()
+        {
+            var z = new Complex<Decimal64>(Decimal64.Parse("0.1"), Decimal64.Parse("0.2"));
+
+            Complex<Decimal64> cot = MathTrig.Cot(z);
+            Complex<Decimal64> asech = MathTrig.Asech(z);
+            Complex<float> sec = MathTrig.Sec(new Complex<float>(1f, 2f));
+
+            Console.WriteLine($"Cot({z}) = {cot}");
+            Console.WriteLine($"Asech({z}) = {asech}");
+            Console.WriteLine($"Sec(1 + 2i) = {sec}");
         }
     }
 ## Contributing

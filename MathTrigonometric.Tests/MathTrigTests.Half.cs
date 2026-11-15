@@ -1,7 +1,6 @@
 ﻿namespace MathTrigonometric.Tests;
 
 // ReSharper disable once InconsistentNaming
-
 public partial class MathTrigTests
 {
     [Theory]
@@ -380,7 +379,7 @@ public partial class MathTrigTests
     [Theory]
     [InlineData(float.NaN, float.NaN)]
     [InlineData(0d, 0d)]
-    [InlineData(5.9604645E-08f, 0d)]
+    [InlineData(5.9604645E-08f, 5.9604645E-08f)]
     [InlineData(0.5d, 0.481211841f)]
     [InlineData(1d, 0.881373644f)]
     [InlineData(2d, 1.4436354751788103d)]
@@ -418,7 +417,7 @@ public partial class MathTrigTests
     [Theory]
     [InlineData(float.NaN, float.NaN)]
     [InlineData(0d, 0d)]
-    [InlineData(5.9604645E-08f, 0d)]
+    [InlineData(5.9604645E-08f, 5.9604645E-08f)]
     [InlineData(0.5d, 0.54930614433405489d)]
     [InlineData(1d, float.PositiveInfinity)]
     [InlineData(2d, float.NaN)]
@@ -437,7 +436,7 @@ public partial class MathTrigTests
     [Theory]
     [InlineData(float.NaN, float.NaN)]
     [InlineData(0d, float.NaN)]
-    [InlineData(5.9604645E-08f, float.PositiveInfinity)]
+    [InlineData(5.9604645E-08f, 17.328125f)]
     [InlineData(0.5d, 1.4436354751788103d)]
     [InlineData(1d, 0.881373644f)]
     [InlineData(2d, 0.481211841f)]
@@ -456,7 +455,7 @@ public partial class MathTrigTests
     [Theory]
     [InlineData(float.NaN, float.NaN)]
     [InlineData(0d, float.NaN)]
-    [InlineData(5.9604645E-08f, float.PositiveInfinity)]
+    [InlineData(5.9604645E-08f, 17.328125f)]
     [InlineData(0.5d, 1.3169578969248166d)]
     [InlineData(1d, 0d)]
     [InlineData(2d, float.NaN)]
