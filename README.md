@@ -27,9 +27,9 @@ You can find a detailed explanation of the implementation and approach in [my ar
 
 In version [1.1.0](https://github.com/AntonovAnton/math.trigonometric/releases/tag/1.1.0), support for `Complex` numbers has been introduced through overloaded methods for the trigonometric functions listed below. This allows the library to handle both real and complex inputs seamlessly.
 
-In version [1.3.0](https://github.com/AntonovAnton/math.trigonometric/releases/tag/1.3.0), support for `float` and `Half` numbers has been introduced through overloaded. 
+In version [1.3.0](https://github.com/AntonovAnton/math.trigonometric/releases/tag/v1.3.0), support for `float` and `Half` numbers has been introduced through overloaded. 
 
-In version [2.0.0](https://github.com/AntonovAnton/math.trigonometric/releases/tag/2.0.0), on .NET 11 and higher, support for the generic `Complex<T>` has been introduced through generic overloads of all the functions listed below. They work with any `T` that `Complex<T>` accepts, including the IEEE 754 decimal types `Decimal32`, `Decimal64` and `Decimal128`, as well as `float`, `Half`, `BFloat16` and `double`.
+In version [2.0.0](https://github.com/AntonovAnton/math.trigonometric/releases/tag/v2.0.0), on .NET 11 and higher, support for the generic `Complex<T>` has been introduced through generic overloads of all the functions listed below. They work with any `T` that `Complex<T>` accepts, including the IEEE 754 decimal types `Decimal32`, `Decimal64` and `Decimal128`, as well as `float`, `Half`, `BFloat16` and `double`.
 
 Version 2.0.0 is a breaking release: it also corrects the complex functions and makes their results identical on every .NET version. Some results change, in particular on branch cuts:
 - Inverse functions return principal values. For example, `Acosh` and `Asech` previously returned the negated value in the left half-plane, such as `Acosh(-2) = -1.317 + πi` instead of `1.317 + πi`.
