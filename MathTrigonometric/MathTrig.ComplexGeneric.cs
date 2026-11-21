@@ -520,7 +520,7 @@ public static partial class MathTrig
         var oneMinusX = T.One - x;
         T re;
         if (x == T.One && !T.IsZero(y))
-            re = (T.Log(T.Hypot(two, y)) - T.Log(T.Abs(y))) / two;
+            re = RealPartAtOne(y); // (1 ∓ x)² + y² would underflow for tiny y
         else
             re = Log1p(four * x / (oneMinusX * oneMinusX + y * y)) / four;
 
@@ -586,7 +586,7 @@ public static partial class MathTrig
         var xMinusOne = x - T.One;
         T re;
         if (x == T.One && !T.IsZero(y))
-            re = (T.Log(T.Hypot(two, y)) - T.Log(T.Abs(y))) / two;
+            re = RealPartAtOne(y); // (1 ∓ x)² + y² would underflow for tiny y
         else
             re = Log1p(four * x / (xMinusOne * xMinusOne + y * y)) / four;
 
@@ -601,16 +601,26 @@ public static partial class MathTrig
         where T : IFloatingPointIeee754<T>, IMinMaxValue<T>
         => new(T.NaN, T.NaN);
 
-    private static T LogTwo<T>()
-        where T : IFloatingPointIeee754<T>, IMinMaxValue<T>
-        => T.Log(T.CreateTruncating(2));
-
     /// <summary>Threshold √MaxValue / 4: below it intermediate squares cannot overflow, above it log(2z) is exact to working precision.</summary>
     private static bool IsLarge<T>(T x, T y)
         where T : IFloatingPointIeee754<T>, IMinMaxValue<T>
     {
-        var threshold = T.Sqrt(T.MaxValue) / T.CreateTruncating(4);
+        var threshold = LargeThreshold<T>();
         return T.Abs(x) > threshold || T.Abs(y) > threshold;
+    }
+
+    /// <summary>
+    ///     Re atanh(1 + iy) = Re acoth(1 + iy) = ¼ log1p(4/y²), without cancellation for large |y|
+    ///     and without overflow of 4/y² for tiny |y|.
+    /// </summary>
+    private static T RealPartAtOne<T>(T y)
+        where T : IFloatingPointIeee754<T>, IMinMaxValue<T>
+    {
+        var ay = T.Abs(y);
+        var r = Two<T>() / ay;
+        return r < LargeThreshold<T>()
+            ? Log1p(r * r) / T.CreateTruncating(4)
+            : (LogTwo<T>() - T.Log(ay)) / Two<T>();
     }
 
     private static Complex<T> Reciprocal<T>(Complex<T> z)
@@ -697,33 +707,6 @@ public static partial class MathTrig
 
         var r = y / x;
         return T.Log(x) + Log1p(r * r) / T.CreateTruncating(2);
-    }
-
-    /// <summary>log(1 + x), accurate for small x (T.LogP1 is not, for some types).</summary>
-    private static T Log1p<T>(T x)
-        where T : IFloatingPointIeee754<T>, IMinMaxValue<T>
-    {
-        if (T.IsPositiveInfinity(x))
-            return x;
-
-        var u = T.One + x;
-        if (u == T.One)
-            return x;
-
-        return T.Log(u) * x / (u - T.One);
-    }
-
-    private static T RealAsinh<T>(T x)
-        where T : IFloatingPointIeee754<T>, IMinMaxValue<T>
-    {
-        var a = T.Abs(x);
-        T r;
-        if (a > T.Sqrt(T.MaxValue) / T.CreateTruncating(4))
-            r = T.Log(a) + LogTwo<T>();
-        else
-            r = Log1p(a + a * a / (T.One + T.Sqrt(T.One + a * a)));
-
-        return T.CopySign(r, x);
     }
 
     #endregion

@@ -21,7 +21,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Sin(Half a)
-        => Half.Sin(a);
+        => Sin<Half>(a);
 
     /// <summary>
     ///     Cosine of the angle is ratio of the adjacent leg to hypotenuse.
@@ -34,7 +34,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Cos(Half a)
-        => Half.Cos(a);
+        => Cos<Half>(a);
 
     /// <summary>
     ///     Tangent of the angle is ratio of the opposite leg to adjacent one.
@@ -47,13 +47,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Tan(Half a)
-    {
-        var cos = Half.Cos(a);
-        if (cos == Half.Zero)
-            return Half.NaN;
-
-        return Half.Sin(a) / cos;
-    }
+        => Tan<Half>(a);
 
     /// <summary>
     ///     Cosecant of the angle is ratio of the hypotenuse to opposite leg.
@@ -66,13 +60,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Csc(Half a)
-    {
-        var sin = Half.Sin(a);
-        if (sin == Half.Zero)
-            return Half.NaN;
-
-        return Half.One / sin;
-    }
+        => Csc<Half>(a);
 
     /// <summary>
     ///     Secant of the angle is ratio of the hypotenuse to adjacent leg.
@@ -85,13 +73,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Sec(Half a)
-    {
-        var cos = Half.Cos(a);
-        if (cos == Half.Zero)
-            return Half.NaN;
-
-        return Half.One / cos;
-    }
+        => Sec<Half>(a);
 
     /// <summary>
     ///     Cotangent of the angle is ratio of the adjacent leg to opposite one.
@@ -104,13 +86,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Cot(Half a)
-    {
-        var sin = Half.Sin(a);
-        if (sin == Half.Zero)
-            return Half.NaN;
-
-        return Half.Cos(a) / sin;
-    }
+        => Cot<Half>(a);
 
     #endregion
 
@@ -127,7 +103,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Asin(Half d)
-        => Half.Asin(d);
+        => Asin<Half>(d);
 
     /// <summary>
     ///     Arc cosine is inverse of the <see cref="Cos(Half)" /> function.
@@ -140,7 +116,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Acos(Half d)
-        => Half.Acos(d);
+        => Acos<Half>(d);
 
     /// <summary>
     ///     Arc tangent is inverse of the <see cref="Tan(Half)" /> function.
@@ -154,7 +130,7 @@ public static partial class MathTrig
     ///     π/2 if <paramref name="d" /> equals <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Atan(Half d)
-        => Half.Atan(d);
+        => Atan<Half>(d);
 
     /// <summary>
     ///     Arc cosecant is inverse of the <see cref="Csc(Half)" /> function.
@@ -168,7 +144,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Acsc(Half d)
-        => (Half)Acsc((double)d);
+        => Acsc<Half>(d);
 
     /// <summary>
     ///     Arc secant is inverse of the <see cref="Sec(Half)" /> function.
@@ -182,7 +158,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Asec(Half d)
-        => (Half)Asec((double)d);
+        => Asec<Half>(d);
 
     /// <summary>
     ///     Arc cotangent is inverse of the <see cref="Coth(Half)" />> function.
@@ -196,13 +172,7 @@ public static partial class MathTrig
     ///     0 if <paramref name="d" /> equals <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Acot(Half d)
-    {
-        //the Trigonometric Symmetry is applied: arccot(−x) = π − arccot(x)
-        if (IsNegative(d))
-            return Half.Pi - Half.Atan(Half.One / -d);
-
-        return Half.Atan(Half.One / d);
-    }
+        => Acot<Half>(d);
 
     #endregion
 
@@ -222,7 +192,7 @@ public static partial class MathTrig
     ///     <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Sinh(Half x)
-        => Half.Sinh(x);
+        => Sinh<Half>(x);
 
     /// <summary>
     ///     Hyperbolic cosine is defined as Cosh(x) = (e^x + e^−x)/2.
@@ -238,7 +208,7 @@ public static partial class MathTrig
     ///     <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Cosh(Half x)
-        => Half.Cosh(x);
+        => Cosh<Half>(x);
 
     /// <summary>
     ///     Hyperbolic tangent is defined as Tanh(x) = (e^x − e^−x)/(e^x + e^−x).
@@ -252,7 +222,7 @@ public static partial class MathTrig
     ///     1 if <paramref name="x" /> equals <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Tanh(Half x)
-        => Half.Tanh(x);
+        => Tanh<Half>(x);
 
     /// <summary>
     ///     Hyperbolic cosecant is defined as Csch(x) = 2/(e^x − e^−x).
@@ -266,7 +236,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Csch(Half x)
-        => (Half)Csch((double)x);
+        => Csch<Half>(x);
 
     /// <summary>
     ///     Hyperbolic secant is defined as Sech(x) = 2/(e^x + e^−x).
@@ -280,7 +250,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Sech(Half x)
-        => (Half)Sech((double)x);
+        => Sech<Half>(x);
 
     /// <summary>
     ///     Hyperbolic cotangent is defined as Coth(x) = (e^x + e^−x)/(e^x − e^−x).
@@ -294,12 +264,7 @@ public static partial class MathTrig
     ///     1 if <paramref name="x" /> equals <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Coth(Half x)
-    {
-        if (x == Half.Zero)
-            return Half.NaN;
-
-        return Half.One / Half.Tanh(x);
-    }
+        => Coth<Half>(x);
 
     #endregion
 
@@ -320,7 +285,7 @@ public static partial class MathTrig
     ///     <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Asinh(Half x)
-        => (Half)Asinh((double)x);
+        => Asinh<Half>(x);
 
     /// <summary>
     ///     Arc-hyperbolic cosine is inverse of the <see cref="Cosh(Half)" /> function is defined as Arcosh(x) = ln[x + √(x^2
@@ -337,7 +302,7 @@ public static partial class MathTrig
     ///     <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Acosh(Half x)
-        => (Half)Acosh((double)x);
+        => Acosh<Half>(x);
 
     /// <summary>
     ///     Arc-hyperbolic tangent is inverse of the <see cref="Tanh(Half)" /> function
@@ -353,7 +318,7 @@ public static partial class MathTrig
     ///     <see cref="F:System.Half.PositiveInfinity" /> if <paramref name="x" /> equals 1.
     /// </returns>
     public static Half Atanh(Half x)
-        => (Half)Atanh((double)x);
+        => Atanh<Half>(x);
 
     /// <summary>
     ///     Arc-hyperbolic cosecant is inverse of the <see cref="Cosh(Half)" /> function
@@ -368,7 +333,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Acsch(Half x)
-        => (Half)Acsch((double)x);
+        => Acsch<Half>(x);
 
     /// <summary>
     ///     Arc-hyperbolic secant is inverse of the <see cref="Sech(Half)" /> function
@@ -382,7 +347,7 @@ public static partial class MathTrig
     ///     <see cref="F:System.Half.PositiveInfinity" />, or 0.
     /// </returns>
     public static Half Asech(Half x)
-        => (Half)Asech((double)x);
+        => Asech<Half>(x);
 
     /// <summary>
     ///     Arc-hyperbolic cotangent is inverse of the <see cref="Coth(Half)" /> function
@@ -397,7 +362,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Half.PositiveInfinity" />.
     /// </returns>
     public static Half Acoth(Half x)
-        => (Half)Acoth((double)x);
+        => Acoth<Half>(x);
 
     #endregion
 
@@ -416,9 +381,6 @@ public static partial class MathTrig
     /// <returns>Angle in degrees (any real number).</returns>
     public static Half RadiansToDegrees(Half radians)
         => Half.RadiansToDegrees(radians);
-
-    private static bool IsNegative(Half d)
-        => Half.IsNegative(d);
 }
 
 #endif

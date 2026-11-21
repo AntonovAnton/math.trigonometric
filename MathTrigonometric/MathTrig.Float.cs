@@ -21,7 +21,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Sin(float a)
-        => MathF.Sin(a);
+        => Sin<float>(a);
 
     /// <summary>
     ///     Cosine of the angle is ratio of the adjacent leg to hypotenuse.
@@ -34,7 +34,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Cos(float a)
-        => MathF.Cos(a);
+        => Cos<float>(a);
 
     /// <summary>
     ///     Tangent of the angle is ratio of the opposite leg to adjacent one.
@@ -47,13 +47,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Tan(float a)
-    {
-        var cos = MathF.Cos(a);
-        if (cos == 0.0f)
-            return float.NaN;
-
-        return MathF.Sin(a) / cos;
-    }
+        => Tan<float>(a);
 
     /// <summary>
     ///     Cosecant of the angle is ratio of the hypotenuse to opposite leg.
@@ -66,13 +60,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Csc(float a)
-    {
-        var sin = MathF.Sin(a);
-        if (sin == 0.0f)
-            return float.NaN;
-
-        return 1.0f / sin;
-    }
+        => Csc<float>(a);
 
     /// <summary>
     ///     Secant of the angle is ratio of the hypotenuse to adjacent leg.
@@ -85,13 +73,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Sec(float a)
-    {
-        var cos = MathF.Cos(a);
-        if (cos == 0.0f)
-            return float.NaN;
-
-        return 1.0f / cos;
-    }
+        => Sec<float>(a);
 
     /// <summary>
     ///     Cotangent of the angle is ratio of the adjacent leg to opposite one.
@@ -104,13 +86,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Cot(float a)
-    {
-        var sin = MathF.Sin(a);
-        if (sin == 0.0f)
-            return float.NaN;
-
-        return MathF.Cos(a) / sin;
-    }
+        => Cot<float>(a);
 
     #endregion
 
@@ -127,7 +103,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Asin(float d)
-        => MathF.Asin(d);
+        => Asin<float>(d);
 
     /// <summary>
     ///     Arc cosine is inverse of the <see cref="Cos(float)" /> function.
@@ -140,7 +116,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Acos(float d)
-        => MathF.Acos(d);
+        => Acos<float>(d);
 
     /// <summary>
     ///     Arc tangent is inverse of the <see cref="Tan(float)" /> function.
@@ -154,7 +130,7 @@ public static partial class MathTrig
     ///     π/2 if <paramref name="d" /> equals <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Atan(float d)
-        => MathF.Atan(d);
+        => Atan<float>(d);
 
     /// <summary>
     ///     Arc cosecant is inverse of the <see cref="Csc(float)" /> function.
@@ -168,7 +144,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Acsc(float d)
-        => (float)Acsc((double)d);
+        => Acsc<float>(d);
 
     /// <summary>
     ///     Arc secant is inverse of the <see cref="Sec(float)" /> function.
@@ -182,7 +158,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Asec(float d)
-        => (float)Asec((double)d);
+        => Asec<float>(d);
 
     /// <summary>
     ///     Arc cotangent is inverse of the <see cref="Coth(float)" />> function.
@@ -196,13 +172,7 @@ public static partial class MathTrig
     ///     0 if <paramref name="d" /> equals <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Acot(float d)
-    {
-        //the Trigonometric Symmetry is applied: arccot(−x) = π − arccot(x)
-        if (IsNegative(d))
-            return MathF.PI - MathF.Atan(1.0f / -d);
-
-        return MathF.Atan(1.0f / d);
-    }
+        => Acot<float>(d);
 
     #endregion
 
@@ -222,7 +192,7 @@ public static partial class MathTrig
     ///     <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Sinh(float x)
-        => MathF.Sinh(x);
+        => Sinh<float>(x);
 
     /// <summary>
     ///     Hyperbolic cosine is defined as Cosh(x) = (e^x + e^−x)/2.
@@ -238,7 +208,7 @@ public static partial class MathTrig
     ///     <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Cosh(float x)
-        => MathF.Cosh(x);
+        => Cosh<float>(x);
 
     /// <summary>
     ///     Hyperbolic tangent is defined as Tanh(x) = (e^x − e^−x)/(e^x + e^−x).
@@ -252,7 +222,7 @@ public static partial class MathTrig
     ///     1 if <paramref name="x" /> equals <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Tanh(float x)
-        => MathF.Tanh(x);
+        => Tanh<float>(x);
 
     /// <summary>
     ///     Hyperbolic cosecant is defined as Csch(x) = 2/(e^x − e^−x).
@@ -266,7 +236,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Csch(float x)
-        => (float)Csch((double)x);
+        => Csch<float>(x);
 
     /// <summary>
     ///     Hyperbolic secant is defined as Sech(x) = 2/(e^x + e^−x).
@@ -280,7 +250,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Sech(float x)
-        => (float)Sech((double)x);
+        => Sech<float>(x);
 
     /// <summary>
     ///     Hyperbolic cotangent is defined as Coth(x) = (e^x + e^−x)/(e^x − e^−x).
@@ -294,12 +264,7 @@ public static partial class MathTrig
     ///     1 if <paramref name="x" /> equals <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Coth(float x)
-    {
-        if (x == 0.0f)
-            return float.NaN;
-
-        return 1.0f / MathF.Tanh(x);
-    }
+        => Coth<float>(x);
 
     #endregion
 
@@ -320,7 +285,7 @@ public static partial class MathTrig
     ///     <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Asinh(float x)
-        => (float)Asinh((double)x);
+        => Asinh<float>(x);
 
     /// <summary>
     ///     Arc-hyperbolic cosine is inverse of the <see cref="Cosh(float)" /> function is defined as Arcosh(x) = ln[x + √(x^2
@@ -337,7 +302,7 @@ public static partial class MathTrig
     ///     <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Acosh(float x)
-        => (float)Acosh((double)x);
+        => Acosh<float>(x);
 
     /// <summary>
     ///     Arc-hyperbolic tangent is inverse of the <see cref="Tanh(float)" /> function
@@ -353,7 +318,7 @@ public static partial class MathTrig
     ///     <see cref="F:System.Single.PositiveInfinity" /> if <paramref name="x" /> equals 1.
     /// </returns>
     public static float Atanh(float x)
-        => (float)Atanh((double)x);
+        => Atanh<float>(x);
 
     /// <summary>
     ///     Arc-hyperbolic cosecant is inverse of the <see cref="Cosh(float)" /> function
@@ -368,7 +333,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Acsch(float x)
-        => (float)Acsch((double)x);
+        => Acsch<float>(x);
 
     /// <summary>
     ///     Arc-hyperbolic secant is inverse of the <see cref="Sech(float)" /> function
@@ -382,7 +347,7 @@ public static partial class MathTrig
     ///     <see cref="F:System.Single.PositiveInfinity" />, or 0.
     /// </returns>
     public static float Asech(float x)
-        => (float)Asech((double)x);
+        => Asech<float>(x);
 
     /// <summary>
     ///     Arc-hyperbolic cotangent is inverse of the <see cref="Coth(float)" /> function
@@ -397,7 +362,7 @@ public static partial class MathTrig
     ///     or <see cref="F:System.Single.PositiveInfinity" />.
     /// </returns>
     public static float Acoth(float x)
-        => (float)Acoth((double)x);
+        => Acoth<float>(x);
 
     #endregion
 
@@ -416,9 +381,6 @@ public static partial class MathTrig
     /// <returns>Angle in degrees (any real number).</returns>
     public static float RadiansToDegrees(float radians)
         => radians * 180.0f / MathF.PI;
-
-    private static bool IsNegative(float d)
-        => BitConverter.SingleToInt32Bits(d) < 0;
 }
 
 #endif

@@ -38,6 +38,8 @@ Version 2.0.0 is a breaking release: it also corrects the complex functions and 
 - Results no longer depend on the runtime's `System.Numerics.Complex`, whose edge-case behavior changed in .NET 11.
 - Accuracy is within a few ulps, including for tiny and huge arguments and near poles. The real `Asinh`, `Acosh`, `Atanh`, `Acsch`, `Asech`, `Acoth`, `Acsc`, `Asec`, `Csch` and `Sech` no longer overflow or lose precision for extreme arguments.
 
+In version [2.1.0](https://github.com/AntonovAnton/math.trigonometric/releases/tag/v2.1.0), on .NET 8 and higher, generic overloads of all the real functions listed below have been introduced, such as `T Sec<T>(T x) where T : IFloatingPointIeee754<T>, IMinMaxValue<T>`. They work with `float` and `Half` and, on .NET 11 and higher, with `BFloat16`, `Decimal32`, `Decimal64` and `Decimal128`. Existing code is not affected: `double` arguments still use the `double` overloads, and the `float` and `Half` overloads are kept and return the same results as before. For types narrower than `double` (`float`, `Half`, `BFloat16`, `Decimal32`), functions built from several operations are evaluated in `double` precision, so the result is the same whether a `float` overload or the generic overload is called.
+
 ### Basic Trigonometric Functions
 1. **Sin**
 
@@ -348,6 +350,28 @@ Here are some examples of how to use the trigonometric functions in this library
             Console.WriteLine($"Asech({value}) = {asech}");
             Console.WriteLine($"Acsch(2) = {acsch}");
         }
+    }
+### Generic Real Numbers (.NET 8+)
+    using System.Numerics;
+    using MathTrigonometric;
+
+    class Program
+    {
+        static void Main()
+        {
+            float sec = MathTrig.Sec(1f);
+            Half acoth = MathTrig.Acoth((Half)2);
+            Decimal64 acsch = MathTrig.Acsch(Decimal64.Parse("0.5")); // .NET 11+
+
+            Console.WriteLine($"Sec(1) = {sec}");
+            Console.WriteLine($"Acoth(2) = {acoth}");
+            Console.WriteLine($"Acsch(0.5) = {acsch}");
+        }
+
+        // works for any IEEE 754 floating-point type
+        static T Hypotenuse<T>(T leg, T angle)
+            where T : IFloatingPointIeee754<T>, IMinMaxValue<T>
+            => leg * MathTrig.Csc(angle);
     }
 ### Generic Complex Numbers (.NET 11+)
     using System.Numerics;
