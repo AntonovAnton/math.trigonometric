@@ -15,9 +15,9 @@
         <RepositoryType>git</RepositoryType>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageTags>math; trigonometric; trigonometry; cot; sec; csc; acot; asec; acsc; coth; sech; csch; acoth; asech; acsch;</PackageTags>
-        <PackageReleaseNotes>It targets .NET Standard 2.0 and higher version. Supports double, float, Half and complex numbers. On .NET 11 and higher, also supports generic Complex&lt;T&gt; (Decimal32, Decimal64, Decimal128, float, Half, BFloat16, double). Breaking change: complex functions now return principal values with IEEE 754 / C99 branch-cut conventions, identical on all .NET versions; improved accuracy for extreme arguments.</PackageReleaseNotes>
+        <PackageReleaseNotes>It targets .NET Standard 2.0 and higher version. Supports double, float, Half and complex numbers. New in 2.1.0: on .NET 8 and higher, generic overloads of all real functions for any IEEE 754 floating-point type (float, Half and, on .NET 11 and higher, BFloat16, Decimal32, Decimal64, Decimal128); the float and Half overloads are kept and return the same results; fixed accuracy of generic complex Atanh and Acoth at Re z = ±1. On .NET 11 and higher, also supports generic Complex&lt;T&gt;. Since 2.0.0, complex functions return principal values with IEEE 754 / C99 branch-cut conventions, identical on all .NET versions.</PackageReleaseNotes>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
-        <Version>2.0.0</Version>
+        <Version>2.1.0</Version>
         <PackageId>MathTrigonometric</PackageId>
         <Product>MathTrigonometric</Product>
 
